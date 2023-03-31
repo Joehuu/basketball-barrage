@@ -1,0 +1,11 @@
+﻿{
+  "solution": {
+    "path": "BasketballBarrage.sln",
+    "projects": [
+      "BasketballBarrage.Desktop\\BasketballBarrage.Desktop.csproj",
+      "BasketballBarrage.Game\\BasketballBarrage.Game.csproj",
+      "BasketballBarrage.Game.Tests\\BasketballBarrage.Game.Tests.csproj",
+      "BasketballBarrage.Resources\\BasketballBarrage.Resources.csproj"
+    ]
+  }
+}
