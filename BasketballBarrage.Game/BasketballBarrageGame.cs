@@ -6,13 +6,11 @@ namespace BasketballBarrage.Game
 {
     public partial class BasketballBarrageGame : BasketballBarrageGameBase
     {
-        private ScreenStack screenStack;
+        private ScreenStack screenStack = null!;
 
         [BackgroundDependencyLoader]
         private void load()
         {
-            // Add your top-level game components here.
-            // A screen stack and sample screen has been provided for convenience, but you can replace it if you don't want to use screens.
             Child = screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both };
         }
 
@@ -21,6 +19,12 @@ namespace BasketballBarrage.Game
             base.LoadComplete();
 
             screenStack.Push(new MainScreen());
+
+            screenStack.ScreenExited += (_, newScreen) =>
+            {
+                if (newScreen == null)
+                    Exit();
+            };
         }
     }
 }
