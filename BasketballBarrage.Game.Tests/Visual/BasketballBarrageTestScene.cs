@@ -2,7 +2,7 @@ using osu.Framework.Testing;
 
 namespace BasketballBarrage.Game.Tests.Visual
 {
-    public partial class BasketballBarrageTestScene : TestScene
+    public abstract partial class BasketballBarrageTestScene : TestScene
     {
         protected override ITestSceneTestRunner CreateRunner() => new BasketballBarrageTestSceneTestRunner();
 
