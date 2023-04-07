@@ -152,6 +152,12 @@ public partial class GameplayScreen : GameScreen
             };
         }
 
+        if (points.Value >= 150)
+        {
+            // TODO: implement proper "frogs" or whatever
+            basketball.Colour = Colour4.Green;
+        }
+
         gameContainer.Add(basketball);
 
         basketball.X = gameContainer.ToLocalSpace(player.ScreenSpaceDrawQuad.Centre).X;
