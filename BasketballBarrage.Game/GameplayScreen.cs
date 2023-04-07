@@ -22,12 +22,14 @@ public partial class GameplayScreen : GameScreen
     private readonly Bindable<int> points = new Bindable<int>();
 
     private readonly Bindable<int> combo = new Bindable<int>();
+    private int maxCombo;
 
     private Hoop hoop = null!;
     private SpriteText pointEarnedText = null!;
     private Container gameContainer = null!;
     private StatisticCounter pointStatisticCounter = null!;
     private StatisticCounter comboStatisticCounter = null!;
+    private StatisticCounter maxComboStatisticCounter = null!;
     private Sample scoreSample = null!;
     private Sample throwSample = null!;
 
@@ -76,7 +78,17 @@ public partial class GameplayScreen : GameScreen
                     },
                 }
             },
-            comboStatisticCounter = new StatisticCounter("Combo"),
+            new FillFlowContainer
+            {
+                AutoSizeAxes = Axes.Both,
+                Direction = FillDirection.Horizontal,
+                Children = new Drawable[]
+                {
+                    // original game calls these run and high run, but call them combo for now
+                    comboStatisticCounter = new StatisticCounter("Combo"),
+                    maxComboStatisticCounter = new StatisticCounter("Max Combo"),
+                }
+            },
             pointStatisticCounter = new StatisticCounter("Points")
             {
                 Anchor = Anchor.TopRight,
@@ -113,6 +125,9 @@ public partial class GameplayScreen : GameScreen
         combo.BindValueChanged(c =>
         {
             comboStatisticCounter.CounterText = c.NewValue.ToString();
+
+            maxCombo = Math.Max(maxCombo, c.NewValue);
+            maxComboStatisticCounter.CounterText = maxCombo.ToString();
         });
     }
 
