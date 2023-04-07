@@ -10,13 +10,15 @@ public partial class Basketball : CircularContainer
 {
     private const int line_thickness = 3;
 
+    protected Colour4 BaseColour = Colour4.OrangeRed;
+
     public Basketball()
     {
         Size = new Vector2(90);
         Masking = true;
         BorderColour = Colour4.Black;
         BorderThickness = line_thickness;
-        Colour = Colour4.OrangeRed;
+        Colour = BaseColour;
     }
 
     [BackgroundDependencyLoader]

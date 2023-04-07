@@ -28,7 +28,7 @@ namespace BasketballBarrage.Game
                     Spacing = new Vector2(25),
                     Children = new Drawable[]
                     {
-                        new Basketball
+                        new MenuBasketball
                         {
                             Anchor = Anchor.TopCentre,
                             Origin = Anchor.TopCentre,
@@ -72,6 +72,23 @@ namespace BasketballBarrage.Game
             }
 
             return base.OnKeyDown(e);
+        }
+
+        private partial class MenuBasketball : Basketball
+        {
+            protected override bool OnHover(HoverEvent e)
+            {
+                this.FadeColour(Colour4.Green, 500, Easing.OutQuint);
+
+                return base.OnHover(e);
+            }
+
+            protected override void OnHoverLost(HoverLostEvent e)
+            {
+                base.OnHoverLost(e);
+
+                this.FadeColour(BaseColour, 500, Easing.OutQuint);
+            }
         }
     }
 }
