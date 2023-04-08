@@ -5,14 +5,16 @@ namespace BasketballBarrage.Game;
 
 public partial class GameScreen : Screen
 {
+    protected const float TRANSITION_DURATION = 500;
+
     public override void OnEntering(ScreenTransitionEvent e)
     {
-        this.FadeIn(250, Easing.OutQuint);
+        this.FadeIn(TRANSITION_DURATION, Easing.OutQuint);
     }
 
     public override bool OnExiting(ScreenExitEvent e)
     {
-        this.FadeOut(250, Easing.OutQuint);
+        this.FadeOut(TRANSITION_DURATION, Easing.OutQuint);
 
         return base.OnExiting(e);
     }

@@ -206,8 +206,8 @@ public partial class GameplayScreen : GameScreen
     {
         base.OnEntering(e);
 
-        players.MoveToY(players.Height).MoveToY(0, 500, Easing.OutQuint);
-        hoop.MoveToY(hoop_y_pos - hoop.Height).MoveToY(hoop_y_pos, 500, Easing.OutQuint);
+        players.MoveToY(players.Height).MoveToY(0, TRANSITION_DURATION, Easing.OutQuint);
+        hoop.MoveToY(hoop_y_pos - hoop.Height).MoveToY(hoop_y_pos, TRANSITION_DURATION, Easing.OutQuint);
     }
 
     protected override bool OnKeyDown(KeyDownEvent e)
