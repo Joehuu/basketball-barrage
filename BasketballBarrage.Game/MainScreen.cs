@@ -14,6 +14,8 @@ namespace BasketballBarrage.Game
     {
         private BasicButton playGameButton = null!;
 
+        protected override bool ExitViaShortcut => false;
+
         [BackgroundDependencyLoader]
         private void load()
         {

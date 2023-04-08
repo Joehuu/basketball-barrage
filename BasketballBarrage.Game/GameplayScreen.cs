@@ -8,10 +8,8 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
-using osu.Framework.Input.Events;
 using osu.Framework.Screens;
 using osuTK;
-using osuTK.Input;
 
 namespace BasketballBarrage.Game;
 
@@ -208,29 +206,5 @@ public partial class GameplayScreen : GameScreen
 
         players.MoveToY(players.Height).MoveToY(0, TRANSITION_DURATION, Easing.OutQuint);
         hoop.MoveToY(hoop_y_pos - hoop.Height).MoveToY(hoop_y_pos, TRANSITION_DURATION, Easing.OutQuint);
-    }
-
-    protected override bool OnKeyDown(KeyDownEvent e)
-    {
-        switch (e.Key)
-        {
-            case Key.Escape:
-                this.Exit();
-                break;
-        }
-
-        return base.OnKeyDown(e);
-    }
-
-    protected override bool OnMouseDown(MouseDownEvent e)
-    {
-        switch (e.Button)
-        {
-            case MouseButton.Button1:
-                this.Exit();
-                break;
-        }
-
-        return base.OnMouseDown(e);
     }
 }
