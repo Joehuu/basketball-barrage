@@ -13,6 +13,7 @@ namespace BasketballBarrage.Game
     public partial class MainScreen : GameScreen
     {
         private BasicButton playGameButton = null!;
+        private FillFlowContainer flow = null!;
 
         protected override bool ExitViaShortcut => false;
 
@@ -21,13 +22,12 @@ namespace BasketballBarrage.Game
         {
             InternalChildren = new Drawable[]
             {
-                new FillFlowContainer
+                flow = new FillFlowContainer
                 {
                     AutoSizeAxes = Axes.Both,
                     Direction = FillDirection.Vertical,
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
-                    Spacing = new Vector2(25),
                     Children = new Drawable[]
                     {
                         new MenuBasketball
@@ -48,7 +48,7 @@ namespace BasketballBarrage.Game
                             Origin = Anchor.TopCentre,
                             Size = new Vector2(150, 50),
                             Text = "Play",
-                            Action = () => this.Push(new GameplayScreen())
+                            Action = () => this.Push(new ModeScreen())
                         },
                         new GameButton
                         {
@@ -74,6 +74,26 @@ namespace BasketballBarrage.Game
             }
 
             return base.OnKeyDown(e);
+        }
+
+        public override void OnEntering(ScreenTransitionEvent e)
+        {
+            base.OnEntering(e);
+
+            transition();
+        }
+
+        public override void OnResuming(ScreenTransitionEvent e)
+        {
+            base.OnResuming(e);
+
+            transition();
+        }
+
+        private void transition()
+        {
+            flow.TransformSpacingTo(new Vector2(150)).TransformSpacingTo(new Vector2(25), TRANSITION_DURATION, Easing.OutQuint);
+            flow.FadeInFromZero(TRANSITION_DURATION, Easing.OutQuint);
         }
 
         private partial class MenuBasketball : Basketball
