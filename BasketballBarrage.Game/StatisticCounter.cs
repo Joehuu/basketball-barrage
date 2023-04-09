@@ -53,11 +53,15 @@ public partial class StatisticCounter : Container
                     {
                         Font = FontUsage.Default.With(size: 35),
                         Text = labelString,
+                        Anchor = Anchor.TopCentre,
+                        Origin = Anchor.TopCentre,
                     },
                     counterText = new SpriteText
                     {
                         Font = FontUsage.Default.With(size: 50),
                         Text = "0",
+                        Anchor = Anchor.TopCentre,
+                        Origin = Anchor.TopCentre,
                     },
                 }
             }
