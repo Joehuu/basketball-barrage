@@ -4,12 +4,12 @@ namespace BasketballBarrage.Game;
 
 public static class TransformExtensions
 {
-    public static void Pop(this Drawable drawable)
+    public static void Pop(this Drawable drawable, float fadeInTime = 300, float fadeOutTime = 500)
     {
-        drawable.FadeIn(300, Easing.OutQuint).Then()
-                .FadeOut(500, Easing.OutQuint);
+        drawable.FadeIn(fadeInTime, Easing.OutQuint).Then()
+                .FadeOut(fadeOutTime, Easing.OutQuint);
 
-        drawable.ScaleTo(1.2f, 300, Easing.OutQuint).Then()
-                .ScaleTo(1f, 500, Easing.OutQuint);
+        drawable.ScaleTo(1.2f, fadeInTime, Easing.OutQuint).Then()
+                .ScaleTo(1f, fadeOutTime, Easing.OutQuint);
     }
 }
