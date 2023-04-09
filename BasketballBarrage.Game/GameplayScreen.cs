@@ -185,12 +185,7 @@ public partial class GameplayScreen : GameScreen
 
             pointEarnedText.Text = earnedPoints.ToString();
             pointEarnedText.Position = hoop.Position + new Vector2(0, 100);
-
-            pointEarnedText.FadeIn(300, Easing.OutQuint).Then()
-                           .FadeOut(500, Easing.OutQuint);
-
-            pointEarnedText.ScaleTo(1.2f, 300, Easing.OutQuint).Then()
-                           .ScaleTo(1f, 500, Easing.OutQuint);
+            pointEarnedText.Pop();
 
             combo.Value++;
         }
