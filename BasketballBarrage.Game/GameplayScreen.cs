@@ -17,7 +17,7 @@ public partial class GameplayScreen : GameScreen
 {
     private Players players = null!;
 
-    private readonly Bindable<bool> gameStarted = new Bindable<bool>();
+    private readonly Bindable<bool> gameInProgress = new Bindable<bool>();
 
     private readonly Bindable<int> points = new Bindable<int>();
 
@@ -63,7 +63,7 @@ public partial class GameplayScreen : GameScreen
                     {
                         Anchor = Anchor.BottomCentre,
                         Origin = Anchor.BottomCentre,
-                        GameStarted = { BindTarget = gameStarted }
+                        GameInProgress = { BindTarget = gameInProgress }
                     },
                     hoop = new Hoop
                     {
@@ -144,7 +144,7 @@ public partial class GameplayScreen : GameScreen
                 .MoveToX(GAME_WIDTH / 2f, 3000).Then()
                 .Loop();
 
-            gameStarted.Value = true;
+            gameInProgress.Value = true;
         }, 2000);
 
         points.BindValueChanged(p =>

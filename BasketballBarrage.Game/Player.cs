@@ -18,7 +18,7 @@ public partial class Player : ClickableContainer
 
     public const float WIDTH = 100;
 
-    public readonly Bindable<bool> GameStarted = new Bindable<bool>();
+    public readonly Bindable<bool> GameInProgress = new Bindable<bool>();
 
     public Player()
     {
@@ -55,7 +55,7 @@ public partial class Player : ClickableContainer
 
         Action = () =>
         {
-            if (Time.Current - timeLastShot < 500 || !GameStarted.Value) return;
+            if (Time.Current - timeLastShot < 500 || !GameInProgress.Value) return;
 
             timeLastShot = Time.Current;
             ShootBasketball?.Invoke();
