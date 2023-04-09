@@ -18,7 +18,7 @@ public partial class Hoop : FillFlowContainer
         AutoSizeAxes = Axes.Both;
         Direction = FillDirection.Vertical;
         Anchor = Anchor.BottomLeft;
-        Origin = Anchor.BottomCentre;
+        Origin = Anchor.BottomLeft;
     }
 
     [BackgroundDependencyLoader]

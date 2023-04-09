@@ -31,6 +31,7 @@ public partial class GameplayScreen : GameScreen
     private Sample scoreSample = null!;
     private Sample throwSample = null!;
     private SpriteText readySetGoText = null!;
+    private Container hoopContainer = null!;
 
     public const float GAME_WIDTH = 800;
     private const int hoop_y_pos = -500;
@@ -64,10 +65,16 @@ public partial class GameplayScreen : GameScreen
                         Origin = Anchor.BottomCentre,
                         GameInProgress = { BindTarget = gameInProgress }
                     },
-                    hoop = new Hoop
+                    hoopContainer = new Container
                     {
-                        Combo = { BindTarget = combo },
-                        X = GAME_WIDTH / 2f,
+                        AutoSizeAxes = Axes.Both,
+                        Anchor = Anchor.BottomLeft,
+                        Origin = Anchor.BottomCentre,
+                        Position = new Vector2(GAME_WIDTH / 2f, hoop_y_pos),
+                        Child = hoop = new Hoop
+                        {
+                            Combo = { BindTarget = combo },
+                        },
                     },
                     pointEarnedText = new SpriteText
                     {
@@ -139,10 +146,10 @@ public partial class GameplayScreen : GameScreen
         // TODO: speed up when combo increases
         Scheduler.AddDelayed(() =>
         {
-            hoop.MoveToX(GAME_WIDTH, 3000).Then()
-                .MoveToX(0, 6000).Then()
-                .MoveToX(GAME_WIDTH / 2f, 3000).Then()
-                .Loop();
+            hoopContainer.MoveToX(GAME_WIDTH, 3000).Then()
+                         .MoveToX(0, 6000).Then()
+                         .MoveToX(GAME_WIDTH / 2f, 3000).Then()
+                         .Loop();
 
             gameInProgress.Value = true;
         }, round_transition_delay);
@@ -213,7 +220,7 @@ public partial class GameplayScreen : GameScreen
         // TODO: implement logic when ball hits hoop
         const int lenience_range = 50;
 
-        var difference = basketball.X - hoop.X;
+        var difference = basketball.X - hoopContainer.X;
 
         if (Math.Abs(difference) <= lenience_range)
         {
@@ -227,7 +234,7 @@ public partial class GameplayScreen : GameScreen
             points.Value += earnedPoints;
 
             pointEarnedText.Text = earnedPoints.ToString();
-            pointEarnedText.Position = hoop.Position + new Vector2(0, 100);
+            pointEarnedText.Position = hoopContainer.Position + new Vector2(0, 100);
             pointEarnedText.Pop();
 
             combo.Value++;
@@ -243,6 +250,6 @@ public partial class GameplayScreen : GameScreen
         base.OnEntering(e);
 
         players.MoveToY(players.Height).MoveToY(0, TRANSITION_DURATION, Easing.OutQuint);
-        hoop.MoveToY(hoop_y_pos - hoop.Height).MoveToY(hoop_y_pos, TRANSITION_DURATION, Easing.OutQuint);
+        hoop.MoveToY(-hoop.Height).MoveToY(0, TRANSITION_DURATION, Easing.OutQuint);
     }
 }
