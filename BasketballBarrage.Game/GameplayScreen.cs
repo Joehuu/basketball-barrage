@@ -17,6 +17,8 @@ public partial class GameplayScreen : GameScreen
 {
     private Players players = null!;
 
+    private readonly Bindable<bool> gameStarted = new Bindable<bool>();
+
     private readonly Bindable<int> points = new Bindable<int>();
 
     private readonly Bindable<int> combo = new Bindable<int>();
@@ -30,6 +32,7 @@ public partial class GameplayScreen : GameScreen
     private StatisticCounter maxComboStatisticCounter = null!;
     private Sample scoreSample = null!;
     private Sample throwSample = null!;
+    private SpriteText readySetGoText = null!;
 
     public const float GAME_WIDTH = 800;
     private const int hoop_y_pos = -500;
@@ -60,6 +63,7 @@ public partial class GameplayScreen : GameScreen
                     {
                         Anchor = Anchor.BottomCentre,
                         Origin = Anchor.BottomCentre,
+                        GameStarted = { BindTarget = gameStarted }
                     },
                     hoop = new Hoop
                     {
@@ -92,6 +96,14 @@ public partial class GameplayScreen : GameScreen
                 Anchor = Anchor.TopRight,
                 Origin = Anchor.TopRight,
             },
+            readySetGoText = new SpriteText
+            {
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
+                Font = FontUsage.Default.With(size: 50),
+                Alpha = 0,
+                Shadow = true,
+            }
         };
 
         for (int i = 0; i < players.Count; i++)
@@ -106,14 +118,34 @@ public partial class GameplayScreen : GameScreen
     {
         base.LoadComplete();
 
+        Scheduler.AddDelayed(() =>
+        {
+            readySetGoText.Colour = Colour4.Red;
+            readySetGoText.Text = "Ready";
+            readySetGoText.Pop();
+        }, 100);
+
+        Scheduler.AddDelayed(() =>
+        {
+            readySetGoText.Colour = Colour4.Yellow;
+            readySetGoText.Text = "Set";
+            readySetGoText.Pop();
+        }, 1050);
+
         // TODO: speed up when combo increases
         Scheduler.AddDelayed(() =>
         {
+            readySetGoText.Colour = Colour4.Green;
+            readySetGoText.Text = "Go!";
+            readySetGoText.Pop();
+
             hoop.MoveToX(GAME_WIDTH, 3000).Then()
                 .MoveToX(0, 6000).Then()
                 .MoveToX(GAME_WIDTH / 2f, 3000).Then()
                 .Loop();
-        }, 500);
+
+            gameStarted.Value = true;
+        }, 2000);
 
         points.BindValueChanged(p =>
         {

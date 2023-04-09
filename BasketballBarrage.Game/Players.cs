@@ -1,4 +1,5 @@
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Extensions.IEnumerableExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -11,6 +12,8 @@ public partial class Players : FillFlowContainer<Player>
 {
     private readonly int count;
 
+    public readonly Bindable<bool> GameStarted = new Bindable<bool>();
+
     public Players(int count = 5)
     {
         this.count = count;
@@ -22,7 +25,12 @@ public partial class Players : FillFlowContainer<Player>
     private void load()
     {
         for (int i = 0; i < count; i++)
-            Add(new Player());
+        {
+            Add(new Player
+            {
+                GameStarted = { BindTarget = GameStarted }
+            });
+        }
     }
 
     protected override bool OnDragStart(DragStartEvent e) => true;

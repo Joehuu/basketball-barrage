@@ -1,5 +1,6 @@
 using System;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
@@ -16,6 +17,8 @@ public partial class Player : ClickableContainer
     private double timeLastShot;
 
     public const float WIDTH = 100;
+
+    public readonly Bindable<bool> GameStarted = new Bindable<bool>();
 
     public Player()
     {
@@ -52,7 +55,7 @@ public partial class Player : ClickableContainer
 
         Action = () =>
         {
-            if (Time.Current - timeLastShot < 500) return;
+            if (Time.Current - timeLastShot < 500 || !GameStarted.Value) return;
 
             timeLastShot = Time.Current;
             ShootBasketball?.Invoke();
