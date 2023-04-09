@@ -34,6 +34,7 @@ public partial class GameplayScreen : GameScreen
 
     public const float GAME_WIDTH = 800;
     private const int hoop_y_pos = -500;
+    private const int round_transition_delay = 2000;
 
     [BackgroundDependencyLoader]
     private void load(ISampleStore samples)
@@ -123,6 +124,32 @@ public partial class GameplayScreen : GameScreen
     {
         base.LoadComplete();
 
+        startGame();
+
+        combo.BindValueChanged(c =>
+        {
+            maxCombo.Value = Math.Max(maxCombo.Value, c.NewValue);
+        });
+    }
+
+    private void startGame()
+    {
+        displayInstruction();
+
+        // TODO: speed up when combo increases
+        Scheduler.AddDelayed(() =>
+        {
+            hoop.MoveToX(GAME_WIDTH, 3000).Then()
+                .MoveToX(0, 6000).Then()
+                .MoveToX(GAME_WIDTH / 2f, 3000).Then()
+                .Loop();
+
+            gameInProgress.Value = true;
+        }, round_transition_delay);
+    }
+
+    private void displayInstruction()
+    {
         Scheduler.AddDelayed(() =>
         {
             readySetGoText.Colour = Colour4.Red;
@@ -137,25 +164,12 @@ public partial class GameplayScreen : GameScreen
             readySetGoText.Pop();
         }, 1050);
 
-        // TODO: speed up when combo increases
         Scheduler.AddDelayed(() =>
         {
             readySetGoText.Colour = Colour4.Green;
             readySetGoText.Text = "Go!";
             readySetGoText.Pop();
-
-            hoop.MoveToX(GAME_WIDTH, 3000).Then()
-                .MoveToX(0, 6000).Then()
-                .MoveToX(GAME_WIDTH / 2f, 3000).Then()
-                .Loop();
-
-            gameInProgress.Value = true;
-        }, 2000);
-
-        combo.BindValueChanged(c =>
-        {
-            maxCombo.Value = Math.Max(maxCombo.Value, c.NewValue);
-        });
+        }, round_transition_delay);
     }
 
     private void spawnBasketBall(IDrawable player, bool extraPoint)
