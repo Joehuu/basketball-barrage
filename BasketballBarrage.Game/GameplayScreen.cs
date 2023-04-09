@@ -22,14 +22,12 @@ public partial class GameplayScreen : GameScreen
     private readonly Bindable<int> points = new Bindable<int>();
 
     private readonly Bindable<int> combo = new Bindable<int>();
-    private int maxCombo;
+
+    private readonly Bindable<int> maxCombo = new Bindable<int>();
 
     private Hoop hoop = null!;
     private SpriteText pointEarnedText = null!;
     private Container gameContainer = null!;
-    private StatisticCounter pointStatisticCounter = null!;
-    private StatisticCounter comboStatisticCounter = null!;
-    private StatisticCounter maxComboStatisticCounter = null!;
     private Sample scoreSample = null!;
     private Sample throwSample = null!;
     private SpriteText readySetGoText = null!;
@@ -87,14 +85,21 @@ public partial class GameplayScreen : GameScreen
                 Children = new Drawable[]
                 {
                     // original game calls these run and high run, but call them combo for now
-                    comboStatisticCounter = new StatisticCounter("Combo"),
-                    maxComboStatisticCounter = new StatisticCounter("Max Combo"),
+                    new StatisticCounter("Combo")
+                    {
+                        CounterValue = { BindTarget = combo }
+                    },
+                    new StatisticCounter("Max Combo")
+                    {
+                        CounterValue = { BindTarget = maxCombo }
+                    },
                 }
             },
-            pointStatisticCounter = new StatisticCounter("Points")
+            new StatisticCounter("Points")
             {
                 Anchor = Anchor.TopRight,
                 Origin = Anchor.TopRight,
+                CounterValue = { BindTarget = points }
             },
             readySetGoText = new SpriteText
             {
@@ -147,17 +152,9 @@ public partial class GameplayScreen : GameScreen
             gameInProgress.Value = true;
         }, 2000);
 
-        points.BindValueChanged(p =>
-        {
-            pointStatisticCounter.CounterText = p.NewValue.ToString();
-        });
-
         combo.BindValueChanged(c =>
         {
-            comboStatisticCounter.CounterText = c.NewValue.ToString();
-
-            maxCombo = Math.Max(maxCombo, c.NewValue);
-            maxComboStatisticCounter.CounterText = maxCombo.ToString();
+            maxCombo.Value = Math.Max(maxCombo.Value, c.NewValue);
         });
     }
 

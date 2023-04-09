@@ -1,4 +1,5 @@
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
@@ -11,10 +12,7 @@ public partial class StatisticCounter : Container
     private SpriteText counterText = null!;
     private readonly string labelString;
 
-    public string CounterText
-    {
-        set => counterText.Text = value;
-    }
+    public IBindable<int> CounterValue = new Bindable<int>();
 
     public StatisticCounter(string labelString)
     {
@@ -66,5 +64,15 @@ public partial class StatisticCounter : Container
                 }
             }
         };
+    }
+
+    protected override void LoadComplete()
+    {
+        base.LoadComplete();
+
+        CounterValue.BindValueChanged(number =>
+        {
+            counterText.Text = number.NewValue.ToString();
+        }, true);
     }
 }
