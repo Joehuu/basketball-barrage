@@ -55,7 +55,7 @@ public partial class ModeScreen : GameScreen
                             {
                                 Size = new Vector2(150, 50),
                                 Text = "Endless",
-                                Action = () => this.Push(new GameplayScreen()),
+                                Action = () => this.Push(new GameplayScreen(GameplayMode.Endless)),
                             },
                         }
                     }

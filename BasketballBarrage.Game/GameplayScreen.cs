@@ -8,6 +8,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.Screens;
 using osuTK;
 
 namespace BasketballBarrage.Game;
@@ -31,10 +32,19 @@ public partial class GameplayScreen : GameScreen
     private Sample throwSample = null!;
     private SpriteText readySetGoText = null!;
     private Container hoopContainer = null!;
+    private readonly GameplayMode mode;
+    private int basketballsVisible;
 
     public const float GAME_WIDTH = 800;
     private const int hoop_y_pos = -500;
     private const int round_transition_delay = 2000;
+
+    public GameplayScreen(GameplayMode mode)
+    {
+        this.mode = mode;
+
+        ValidForResume = false;
+    }
 
     [BackgroundDependencyLoader]
     private void load(ISampleStore samples)
@@ -189,8 +199,33 @@ public partial class GameplayScreen : GameScreen
         }, round_transition_delay);
     }
 
+    private void endGame()
+    {
+        if (!gameInProgress.Value) return;
+
+        readySetGoText.Colour = Colour4.White;
+        readySetGoText.Text = "Game over";
+        readySetGoText.Pop(600, 1000);
+
+        Scheduler.AddDelayed(() =>
+        {
+            this.Push(new ResultsScreen
+            {
+                Points = { BindTarget = points }
+            });
+        }, round_transition_delay);
+
+        gameInProgress.Value = false;
+
+        players.MoveToY(players.Height, TRANSITION_DURATION, Easing.OutQuint).FadeOut(TRANSITION_DURATION, Easing.OutQuint);
+
+        if (basketballsVisible == 0)
+            hoop.Hide();
+    }
+
     private void spawnBasketBall(IDrawable player, bool extraPoint)
     {
+        basketballsVisible++;
         throwSample.Play();
 
         var basketball = new Basketball
@@ -250,8 +285,20 @@ public partial class GameplayScreen : GameScreen
             combo.Value++;
         }
         else
+        {
             combo.Value = 0;
+            if (mode == GameplayMode.Endless)
+                endGame();
+        }
 
-        basketball.FadeOut(300, Easing.OutQuint).Expire();
+        basketball.FadeOut(300, Easing.OutQuint).OnComplete(b =>
+        {
+            basketballsVisible--;
+
+            if (!gameInProgress.Value && basketballsVisible == 0)
+                hoop.Hide();
+
+            b.Expire();
+        });
     }
 }
