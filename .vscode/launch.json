@@ -9,13 +9,13 @@
             "request": "launch",
             "program": "dotnet",
             "args": [
-                "${workspaceRoot}/BasketballBarrage.Game.Tests/bin/Debug/net6.0/BasketballBarrage.Game.Tests.dll",
+                "${workspaceRoot}/BasketballBarrage.Game.Tests/bin/Debug/net7.0/BasketballBarrage.Game.Tests.dll",
             ],
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "Build (Tests, Debug)",
             "linux": {
                 "env": {
-                    "LD_LIBRARY_PATH": "${workspaceRoot}/BasketballBarrage.Game.Tests/bin/Debug/net6.0:${env:LD_LIBRARY_PATH}"
+                    "LD_LIBRARY_PATH": "${workspaceRoot}/BasketballBarrage.Game.Tests/bin/Debug/net7.0:${env:LD_LIBRARY_PATH}"
                 }
             },
             "console": "internalConsole"
@@ -26,13 +26,13 @@
             "request": "launch",
             "program": "dotnet",
             "args": [
-                "${workspaceRoot}/BasketballBarrage.Game.Tests/bin/Release/net6.0/BasketballBarrage.Game.Tests.dll",
+                "${workspaceRoot}/BasketballBarrage.Game.Tests/bin/Release/net7.0/BasketballBarrage.Game.Tests.dll",
             ],
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "Build (Tests, Release)",
             "linux": {
                 "env": {
-                    "LD_LIBRARY_PATH": "${workspaceRoot}/BasketballBarrage.Game.Tests/bin/Release/net6.0:${env:LD_LIBRARY_PATH}"
+                    "LD_LIBRARY_PATH": "${workspaceRoot}/BasketballBarrage.Game.Tests/bin/Release/net7.0:${env:LD_LIBRARY_PATH}"
                 }
             },
             "console": "internalConsole"
@@ -43,13 +43,13 @@
             "request": "launch",
             "program": "dotnet",
             "args": [
-                "${workspaceRoot}/BasketballBarrage.Desktop/bin/Debug/net6.0/BasketballBarrage.dll",
+                "${workspaceRoot}/BasketballBarrage.Desktop/bin/Debug/net7.0/BasketballBarrage.dll",
             ],
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "Build (Desktop, Debug)",
             "linux": {
                 "env": {
-                    "LD_LIBRARY_PATH": "${workspaceRoot}/BasketballBarrage.Desktop/bin/Debug/net6.0:${env:LD_LIBRARY_PATH}"
+                    "LD_LIBRARY_PATH": "${workspaceRoot}/BasketballBarrage.Desktop/bin/Debug/net7.0:${env:LD_LIBRARY_PATH}"
                 }
             },
             "console": "internalConsole"
@@ -60,13 +60,13 @@
             "request": "launch",
             "program": "dotnet",
             "args": [
-                "${workspaceRoot}/BasketballBarrage.Desktop/bin/Debug/net6.0/BasketballBarrage.dll",
+                "${workspaceRoot}/BasketballBarrage.Desktop/bin/Debug/net7.0/BasketballBarrage.dll",
             ],
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "Build (Desktop, Release)",
             "linux": {
                 "env": {
-                    "LD_LIBRARY_PATH": "${workspaceRoot}/BasketballBarrage.Desktop/bin/Debug/net6.0:${env:LD_LIBRARY_PATH}"
+                    "LD_LIBRARY_PATH": "${workspaceRoot}/BasketballBarrage.Desktop/bin/Debug/net7.0:${env:LD_LIBRARY_PATH}"
                 }
             },
             "console": "internalConsole"
