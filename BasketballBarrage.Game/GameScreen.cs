@@ -13,7 +13,9 @@ public partial class GameScreen : Screen
 
     public override void OnEntering(ScreenTransitionEvent e)
     {
-        this.FadeIn(TRANSITION_DURATION, Easing.OutQuint);
+        base.OnEntering(e);
+
+        this.FadeInFromZero(TRANSITION_DURATION, Easing.OutQuint);
     }
 
     public override bool OnExiting(ScreenExitEvent e)
@@ -21,6 +23,20 @@ public partial class GameScreen : Screen
         this.FadeOut(TRANSITION_DURATION, Easing.OutQuint);
 
         return base.OnExiting(e);
+    }
+
+    public override void OnResuming(ScreenTransitionEvent e)
+    {
+        base.OnResuming(e);
+
+        this.FadeIn(TRANSITION_DURATION, Easing.OutQuint);
+    }
+
+    public override void OnSuspending(ScreenTransitionEvent e)
+    {
+        base.OnSuspending(e);
+
+        this.FadeOut(TRANSITION_DURATION, Easing.OutQuint);
     }
 
     protected override bool OnKeyDown(KeyDownEvent e)
