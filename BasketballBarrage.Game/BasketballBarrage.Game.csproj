@@ -7,6 +7,6 @@
     <ProjectReference Include="..\BasketballBarrage.Resources\BasketballBarrage.Resources.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ppy.osu.Framework" Version="2023.327.0" />
+    <PackageReference Include="ppy.osu.Framework" Version="2023.403.0" />
   </ItemGroup>
 </Project>
