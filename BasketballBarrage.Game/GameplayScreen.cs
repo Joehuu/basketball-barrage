@@ -250,6 +250,6 @@ public partial class GameplayScreen : GameScreen
         base.OnEntering(e);
 
         players.MoveToY(players.Height).MoveToY(0, TRANSITION_DURATION, Easing.OutQuint);
-        hoop.MoveToY(-hoop.Height).MoveToY(0, TRANSITION_DURATION, Easing.OutQuint);
+        hoop.Show();
     }
 }

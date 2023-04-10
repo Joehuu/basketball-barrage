@@ -7,7 +7,7 @@ namespace BasketballBarrage.Game;
 
 public partial class GameScreen : Screen
 {
-    protected const float TRANSITION_DURATION = 500;
+    public const float TRANSITION_DURATION = 500;
 
     protected virtual bool ExitViaShortcut => true;
 

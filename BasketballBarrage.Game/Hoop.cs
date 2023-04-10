@@ -9,14 +9,14 @@ using osuTK;
 
 namespace BasketballBarrage.Game;
 
-public partial class Hoop : FillFlowContainer
+public partial class Hoop : VisibilityContainer
 {
     public IBindable<int> Combo = new Bindable<int>();
+    private FillFlowContainer flow = null!;
 
     public Hoop()
     {
         AutoSizeAxes = Axes.Both;
-        Direction = FillDirection.Vertical;
         Anchor = Anchor.BottomLeft;
         Origin = Anchor.BottomLeft;
     }
@@ -24,47 +24,52 @@ public partial class Hoop : FillFlowContainer
     [BackgroundDependencyLoader]
     private void load()
     {
-        Children = new Drawable[]
+        Child = flow = new FillFlowContainer
         {
-            new Container
+            AutoSizeAxes = Axes.Both,
+            Direction = FillDirection.Vertical,
+            Children = new Drawable[]
             {
-                Size = new Vector2(125, 100),
-                Masking = true,
-                Children = new Drawable[]
+                new Container
                 {
-                    new Box
+                    Size = new Vector2(125, 100),
+                    Masking = true,
+                    Children = new Drawable[]
                     {
-                        RelativeSizeAxes = Axes.Both,
-                    },
-                    new Container
-                    {
-                        RelativeSizeAxes = Axes.Both,
-                        Size = new Vector2(0.5f),
-                        BorderColour = Colour4.OrangeRed,
-                        BorderThickness = 5,
-                        Masking = true,
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        Child = new Box
+                        new Box
                         {
                             RelativeSizeAxes = Axes.Both,
+                        },
+                        new Container
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                            Size = new Vector2(0.5f),
+                            BorderColour = Colour4.OrangeRed,
+                            BorderThickness = 5,
+                            Masking = true,
+                            Anchor = Anchor.Centre,
+                            Origin = Anchor.Centre,
+                            Child = new Box
+                            {
+                                RelativeSizeAxes = Axes.Both,
+                            }
                         }
                     }
-                }
-            },
-            new CircularContainer
-            {
-                Size = new Vector2(100),
-                Masking = true,
-                BorderColour = Colour4.OrangeRed,
-                BorderThickness = 5,
-                Anchor = Anchor.TopCentre,
-                Origin = Anchor.TopCentre,
-                Child = new Box
+                },
+                new CircularContainer
                 {
-                    RelativeSizeAxes = Axes.Both,
-                    AlwaysPresent = true,
-                    Alpha = 0,
+                    Size = new Vector2(100),
+                    Masking = true,
+                    BorderColour = Colour4.OrangeRed,
+                    BorderThickness = 5,
+                    Anchor = Anchor.TopCentre,
+                    Origin = Anchor.TopCentre,
+                    Child = new Box
+                    {
+                        RelativeSizeAxes = Axes.Both,
+                        AlwaysPresent = true,
+                        Alpha = 0,
+                    }
                 }
             }
         };
@@ -79,7 +84,7 @@ public partial class Hoop : FillFlowContainer
             switch (combo.NewValue)
             {
                 case >= 3:
-                    Children.ForEach(d =>
+                    flow.Children.ForEach(d =>
                     {
                         ((Container)d).EdgeEffect = new EdgeEffectParameters
                         {
@@ -92,7 +97,7 @@ public partial class Hoop : FillFlowContainer
                     break;
 
                 default:
-                    Children.ForEach(d =>
+                    flow.Children.ForEach(d =>
                     {
                         ((Container)d).EdgeEffect = new EdgeEffectParameters
                         {
@@ -106,4 +111,10 @@ public partial class Hoop : FillFlowContainer
             }
         }, true);
     }
+
+    protected override void PopIn() =>
+        this.FadeIn(GameScreen.TRANSITION_DURATION, Easing.OutQuint).MoveToY(-Height).MoveToY(0, GameScreen.TRANSITION_DURATION, Easing.OutQuint);
+
+    protected override void PopOut() =>
+        this.MoveToY(0).MoveToY(-Height, GameScreen.TRANSITION_DURATION, Easing.OutQuint).FadeOut(GameScreen.TRANSITION_DURATION, Easing.OutQuint);
 }
