@@ -8,7 +8,6 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
-using osu.Framework.Screens;
 using osuTK;
 
 namespace BasketballBarrage.Game;
@@ -63,17 +62,19 @@ public partial class GameplayScreen : GameScreen
                     {
                         Anchor = Anchor.BottomCentre,
                         Origin = Anchor.BottomCentre,
-                        GameInProgress = { BindTarget = gameInProgress }
+                        GameInProgress = { BindTarget = gameInProgress },
+                        Alpha = 0,
                     },
                     hoopContainer = new Container
                     {
                         AutoSizeAxes = Axes.Both,
                         Anchor = Anchor.BottomLeft,
                         Origin = Anchor.BottomCentre,
-                        Position = new Vector2(GAME_WIDTH / 2f, hoop_y_pos),
+                        Y = hoop_y_pos,
                         Child = hoop = new Hoop
                         {
                             Combo = { BindTarget = combo },
+                            Alpha = 0,
                         },
                     },
                     pointEarnedText = new SpriteText
@@ -141,6 +142,7 @@ public partial class GameplayScreen : GameScreen
 
     private void startGame()
     {
+        prepareForRound();
         displayInstruction();
 
         // TODO: speed up when combo increases
@@ -153,6 +155,14 @@ public partial class GameplayScreen : GameScreen
 
             gameInProgress.Value = true;
         }, round_transition_delay);
+    }
+
+    private void prepareForRound()
+    {
+        combo.Value = 0;
+        hoopContainer.MoveToX(GAME_WIDTH / 2f);
+        players.FadeIn(TRANSITION_DURATION, Easing.OutQuint).MoveToY(players.Height).MoveToY(0, TRANSITION_DURATION, Easing.OutQuint);
+        hoop.Show();
     }
 
     private void displayInstruction()
@@ -243,13 +253,5 @@ public partial class GameplayScreen : GameScreen
             combo.Value = 0;
 
         basketball.FadeOut(300, Easing.OutQuint).Expire();
-    }
-
-    public override void OnEntering(ScreenTransitionEvent e)
-    {
-        base.OnEntering(e);
-
-        players.MoveToY(players.Height).MoveToY(0, TRANSITION_DURATION, Easing.OutQuint);
-        hoop.Show();
     }
 }
