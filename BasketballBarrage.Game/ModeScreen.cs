@@ -57,7 +57,14 @@ public partial class ModeScreen : GameScreen
                                 Action = () => this.Push(new GameplayScreen(GameplayMode.Endless)),
                             },
                         }
-                    }
+                    },
+                    new GameButton
+                    {
+                        Anchor = Anchor.TopCentre,
+                        Origin = Anchor.TopCentre,
+                        Text = "Back",
+                        Action = this.Exit
+                    },
                 }
             }
         };
