@@ -46,7 +46,6 @@ namespace BasketballBarrage.Game
                         {
                             Anchor = Anchor.TopCentre,
                             Origin = Anchor.TopCentre,
-                            Size = new Vector2(150, 50),
                             Text = "Play",
                             Action = () => this.Push(new ModeScreen())
                         },
@@ -54,7 +53,6 @@ namespace BasketballBarrage.Game
                         {
                             Anchor = Anchor.TopCentre,
                             Origin = Anchor.TopCentre,
-                            Size = new Vector2(150, 50),
                             Text = "Quit",
                             Action = this.Exit
                         }
