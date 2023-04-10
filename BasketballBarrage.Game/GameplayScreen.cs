@@ -34,16 +34,34 @@ public partial class GameplayScreen : GameScreen
     private Container hoopContainer = null!;
     private readonly GameplayMode mode;
     private int basketballsVisible;
+    private DateTime startTime;
+    private DateTime endTime;
+    private SpriteText timerText = null!;
+    private int rounds;
+    private SpriteIcon infiniteSign = null!;
 
     public const float GAME_WIDTH = 800;
     private const int hoop_y_pos = -500;
     private const int round_transition_delay = 2000;
+    private const int classic_round_time = 30;
 
     public GameplayScreen(GameplayMode mode)
     {
         this.mode = mode;
 
         ValidForResume = false;
+
+        switch (mode)
+        {
+            case GameplayMode.Classic:
+                // based on original game
+                rounds = 2;
+                break;
+
+            case GameplayMode.Endless:
+                rounds = 1;
+                break;
+        }
     }
 
     [BackgroundDependencyLoader]
@@ -127,6 +145,37 @@ public partial class GameplayScreen : GameScreen
                 Font = FontUsage.Default.With(size: 50),
                 Alpha = 0,
                 Shadow = true,
+            },
+            new CircularContainer
+            {
+                Size = new Vector2(75),
+                Masking = true,
+                Anchor = Anchor.CentreRight,
+                Origin = Anchor.CentreRight,
+                Children = new Drawable[]
+                {
+                    new Box
+                    {
+                        RelativeSizeAxes = Axes.Both,
+                        Alpha = 0.5f,
+                        Colour = Colour4.Black,
+                    },
+                    timerText = new SpriteText
+                    {
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Font = FontUsage.Default.With(size: 50),
+                        Alpha = 0,
+                    },
+                    infiniteSign = new SpriteIcon
+                    {
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Icon = FontAwesome.Solid.Infinity,
+                        Alpha = 0,
+                        Size = new Vector2(30),
+                    }
+                }
             }
         };
 
@@ -164,11 +213,27 @@ public partial class GameplayScreen : GameScreen
                          .Loop();
 
             gameInProgress.Value = true;
+
+            if (mode == GameplayMode.Classic)
+            {
+                startTime = DateTime.Now;
+
+                // based on original game
+                endTime = startTime + TimeSpan.FromSeconds(classic_round_time + 1);
+            }
         }, round_transition_delay);
     }
 
     private void prepareForRound()
     {
+        if (mode == GameplayMode.Classic)
+        {
+            timerText.Alpha = 1;
+            timerText.Text = classic_round_time.ToString();
+        }
+        else
+            infiniteSign.Alpha = 1;
+
         combo.Value = 0;
         hoopContainer.MoveToX(GAME_WIDTH / 2f);
         players.FadeIn(TRANSITION_DURATION, Easing.OutQuint).MoveToY(players.Height).MoveToY(0, TRANSITION_DURATION, Easing.OutQuint);
@@ -199,6 +264,21 @@ public partial class GameplayScreen : GameScreen
         }, round_transition_delay);
     }
 
+    protected override void UpdateAfterChildren()
+    {
+        base.UpdateAfterChildren();
+
+        if (mode == GameplayMode.Classic && gameInProgress.Value)
+        {
+            var secondsLeft = (endTime - DateTime.Now).Seconds;
+
+            timerText.Text = secondsLeft.ToString();
+
+            if (secondsLeft <= 0)
+                endGame();
+        }
+    }
+
     private void endGame()
     {
         if (!gameInProgress.Value) return;
@@ -209,10 +289,17 @@ public partial class GameplayScreen : GameScreen
 
         Scheduler.AddDelayed(() =>
         {
-            this.Push(new ResultsScreen
+            rounds--;
+
+            if (rounds == 0)
             {
-                Points = { BindTarget = points }
-            });
+                this.Push(new ResultsScreen
+                {
+                    Points = { BindTarget = points }
+                });
+            }
+            else
+                startGame();
         }, round_transition_delay);
 
         gameInProgress.Value = false;

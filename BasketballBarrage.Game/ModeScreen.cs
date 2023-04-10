@@ -49,7 +49,8 @@ public partial class ModeScreen : GameScreen
                             new GameButton
                             {
                                 Size = new Vector2(150, 50),
-                                Text = "Classic"
+                                Text = "Classic",
+                                Action = () => this.Push(new GameplayScreen(GameplayMode.Classic)),
                             },
                             new GameButton
                             {

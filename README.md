@@ -7,6 +7,5 @@
 ## Missing features
 
 - original gameplay
-    - 2 timed 30 second rounds
     - high score saving
     - two players
