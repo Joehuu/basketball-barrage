@@ -17,4 +17,4 @@ The following command is used to make the binaries:
 dotnet publish BasketballBarrage.Desktop -r win-x64 -c Release --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:PublishTrimmed=true
 ```
 
-While the framework is capable of cross-platform, there are only Windows-only releases for now until I learn how to make the binaries for other platforms.
+The generated `publish` folder is renamed to `Basketball Barrage` and then zipped to `basketball-barrage-{version}.zip`. While the framework is capable of cross-platform, there are only Windows-only releases for now until I learn how to make the binaries for other platforms.
