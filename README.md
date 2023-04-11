@@ -12,6 +12,7 @@
 
 - original gameplay
     - two players
+    - random +10 targets
 
 ## Releases
 
