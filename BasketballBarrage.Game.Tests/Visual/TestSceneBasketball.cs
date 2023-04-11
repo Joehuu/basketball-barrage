@@ -14,7 +14,7 @@ namespace BasketballBarrage.Game.Tests.Visual
                 new Box
                 {
                     RelativeSizeAxes = Axes.Both,
-                    Colour = Colour4.DimGray,
+                    Colour = Colour4.Red,
                 },
                 new Basketball
                 {

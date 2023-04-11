@@ -1,3 +1,7 @@
+<p align="center">
+  <img alt="Game icon" src="assets/icon.png">
+</p>
+
 # Basketball Barrage
 
  A *WIP* game based off of [TouchMaster](https://en.wikipedia.org/wiki/TouchMaster) Hot Hoops using [osu!framework](https://github.com/ppy/osu-framework)
