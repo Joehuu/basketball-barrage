@@ -8,5 +8,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ppy.osu.Framework" Version="2023.403.0" />
+    <PackageReference Include="Realm" Version="10.21.0" />
   </ItemGroup>
 </Project>

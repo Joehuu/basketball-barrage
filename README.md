@@ -7,5 +7,4 @@
 ## Missing features
 
 - original gameplay
-    - high score saving
     - two players

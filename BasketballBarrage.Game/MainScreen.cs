@@ -53,6 +53,13 @@ namespace BasketballBarrage.Game
                         {
                             Anchor = Anchor.TopCentre,
                             Origin = Anchor.TopCentre,
+                            Text = "Leaderboards",
+                            Action = () => this.Push(new LeaderboardScreen())
+                        },
+                        new GameButton
+                        {
+                            Anchor = Anchor.TopCentre,
+                            Origin = Anchor.TopCentre,
                             Text = "Quit",
                             Action = this.Exit
                         }

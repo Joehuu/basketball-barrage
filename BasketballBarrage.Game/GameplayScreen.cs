@@ -293,7 +293,7 @@ public partial class GameplayScreen : GameScreen
 
             if (rounds == 0)
             {
-                this.Push(new ResultsScreen
+                this.Push(new ResultsScreen(mode)
                 {
                     Points = { BindTarget = points }
                 });
