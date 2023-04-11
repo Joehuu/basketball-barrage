@@ -8,3 +8,13 @@
 
 - original gameplay
     - two players
+
+## Releases
+
+The following command is used to make the binaries:
+
+```shell
+dotnet publish BasketballBarrage.Desktop -r win-x64 -c Release --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:PublishTrimmed=true
+```
+
+While the framework is capable of cross-platform, there are only Windows-only releases for now until I learn how to make the binaries for other platforms.

@@ -3,11 +3,21 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\BasketballBarrage.Resources\BasketballBarrage.Resources.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ppy.osu.Framework" Version="2023.403.0" />
     <PackageReference Include="Realm" Version="10.21.0" />
+  </ItemGroup>
+  
+  <!-- Needed to build binaries (something to do with package conflicts) -->
+  <ItemGroup>
+    <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Handles" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
   </ItemGroup>
 </Project>
