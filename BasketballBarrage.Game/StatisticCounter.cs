@@ -19,8 +19,6 @@ public partial class StatisticCounter : Container
         this.labelString = labelString;
 
         AutoSizeAxes = Axes.Both;
-
-        Padding = new MarginPadding(5);
     }
 
     [BackgroundDependencyLoader]

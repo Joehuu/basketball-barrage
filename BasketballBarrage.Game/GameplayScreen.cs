@@ -115,28 +115,68 @@ public partial class GameplayScreen : GameScreen
                     },
                 }
             },
-            new FillFlowContainer
+            new Container
             {
-                AutoSizeAxes = Axes.Both,
-                Direction = FillDirection.Horizontal,
+                RelativeSizeAxes = Axes.Both,
+                Padding = new MarginPadding(5),
                 Children = new Drawable[]
                 {
-                    // original game calls these run and high run, but call them combo for now
-                    new StatisticCounter("Combo")
+                    new FillFlowContainer
                     {
-                        CounterValue = { BindTarget = combo }
+                        AutoSizeAxes = Axes.Both,
+                        Direction = FillDirection.Horizontal,
+                        Spacing = new Vector2(5),
+                        Children = new Drawable[]
+                        {
+                            // original game calls these run and high run, but call them combo for now
+                            new StatisticCounter("Combo")
+                            {
+                                CounterValue = { BindTarget = combo }
+                            },
+                            new StatisticCounter("Max Combo")
+                            {
+                                CounterValue = { BindTarget = maxCombo }
+                            },
+                        }
                     },
-                    new StatisticCounter("Max Combo")
+                    new StatisticCounter("Points")
                     {
-                        CounterValue = { BindTarget = maxCombo }
+                        Anchor = Anchor.TopRight,
+                        Origin = Anchor.TopRight,
+                        CounterValue = { BindTarget = points }
                     },
+                    new CircularContainer
+                    {
+                        Size = new Vector2(75),
+                        Masking = true,
+                        Anchor = Anchor.CentreRight,
+                        Origin = Anchor.CentreRight,
+                        Children = new Drawable[]
+                        {
+                            new Box
+                            {
+                                RelativeSizeAxes = Axes.Both,
+                                Alpha = 0.5f,
+                                Colour = Colour4.Black,
+                            },
+                            timerText = new SpriteText
+                            {
+                                Anchor = Anchor.Centre,
+                                Origin = Anchor.Centre,
+                                Font = FontUsage.Default.With(size: 50),
+                                Alpha = 0,
+                            },
+                            infiniteSign = new SpriteIcon
+                            {
+                                Anchor = Anchor.Centre,
+                                Origin = Anchor.Centre,
+                                Icon = FontAwesome.Solid.Infinity,
+                                Alpha = 0,
+                                Size = new Vector2(30),
+                            }
+                        }
+                    }
                 }
-            },
-            new StatisticCounter("Points")
-            {
-                Anchor = Anchor.TopRight,
-                Origin = Anchor.TopRight,
-                CounterValue = { BindTarget = points }
             },
             readySetGoText = new SpriteText
             {
@@ -146,37 +186,6 @@ public partial class GameplayScreen : GameScreen
                 Alpha = 0,
                 Shadow = true,
             },
-            new CircularContainer
-            {
-                Size = new Vector2(75),
-                Masking = true,
-                Anchor = Anchor.CentreRight,
-                Origin = Anchor.CentreRight,
-                Children = new Drawable[]
-                {
-                    new Box
-                    {
-                        RelativeSizeAxes = Axes.Both,
-                        Alpha = 0.5f,
-                        Colour = Colour4.Black,
-                    },
-                    timerText = new SpriteText
-                    {
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        Font = FontUsage.Default.With(size: 50),
-                        Alpha = 0,
-                    },
-                    infiniteSign = new SpriteIcon
-                    {
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        Icon = FontAwesome.Solid.Infinity,
-                        Alpha = 0,
-                        Size = new Vector2(30),
-                    }
-                }
-            }
         };
 
         for (int i = 0; i < players.Count; i++)
