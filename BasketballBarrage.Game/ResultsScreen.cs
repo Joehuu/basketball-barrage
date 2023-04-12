@@ -78,6 +78,17 @@ public partial class ResultsScreen : GameScreen
                     {
                         Anchor = Anchor.TopCentre,
                         Origin = Anchor.TopCentre,
+                        Text = "Retry",
+                        Action = () =>
+                        {
+                            ValidForResume = false;
+                            this.Push(new GameplayScreen(mode));
+                        },
+                    },
+                    new GameButton
+                    {
+                        Anchor = Anchor.TopCentre,
+                        Origin = Anchor.TopCentre,
                         Text = "Back",
                         Action = this.Exit
                     },
