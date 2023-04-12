@@ -14,11 +14,7 @@ namespace BasketballBarrage.Game;
 
 public partial class LeaderboardScreen : GameScreen
 {
-    private FillFlowContainer flow = null!;
-    private FillFlowContainer nameColumn = null!;
-    private FillFlowContainer pointColumn = null!;
-    private FillFlowContainer modeColumn = null!;
-    private FillFlowContainer timeColumn = null!;
+    private GameScrollContainer scrollContainer = null!;
 
     [BackgroundDependencyLoader]
     private void load()
@@ -30,58 +26,104 @@ public partial class LeaderboardScreen : GameScreen
                 RelativeSizeAxes = Axes.Both,
                 Colour = Colour4.Black,
             },
-            flow = new FillFlowContainer
+            new GridContainer
             {
-                AutoSizeAxes = Axes.Both,
-                Direction = FillDirection.Vertical,
-                Spacing = new Vector2(25),
-                Anchor = Anchor.Centre,
-                Origin = Anchor.Centre,
-                Child = new FillFlowContainer
+                RelativeSizeAxes = Axes.Both,
+                RowDimensions = new[]
                 {
-                    AutoSizeAxes = Axes.Both,
-                    Direction = FillDirection.Horizontal,
-                    Spacing = new Vector2(25),
-                    Children = new Drawable[]
+                    new Dimension(),
+                    new Dimension(GridSizeMode.AutoSize),
+                },
+                Content = new[]
+                {
+                    new Drawable[]
                     {
-                        nameColumn = new ColumnFlowContainer(),
-                        pointColumn = new ColumnFlowContainer(),
-                        modeColumn = new ColumnFlowContainer(),
-                        timeColumn = new ColumnFlowContainer(),
+                        scrollContainer = new GameScrollContainer
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                            Padding = new MarginPadding(25),
+                        }
+                    },
+                    new Drawable[]
+                    {
+                        new Container
+                        {
+                            AutoSizeAxes = Axes.Both,
+                            Anchor = Anchor.TopCentre,
+                            Origin = Anchor.TopCentre,
+                            Padding = new MarginPadding(25),
+                            Child = new GameButton
+                            {
+                                Text = "Back",
+                                Action = this.Exit
+                            }
+                        }
                     }
                 }
-            },
+            }
         };
 
+        addContent();
+    }
+
+    private void addContent()
+    {
         var realm = Realm.GetInstance($"{Directory.GetCurrentDirectory()}/client.realm");
 
-        foreach (var score in realm.All<Score>().OrderByDescending(s => s.Points))
-        {
-            nameColumn.Add(new SpriteText
-            {
-                Text = score.PlayerName,
-            });
-            pointColumn.Add(new SpriteText
-            {
-                Text = score.Points.ToString(),
-            });
-            modeColumn.Add(new SpriteText
-            {
-                Text = score.Mode,
-            });
-            timeColumn.Add(new SpriteText
-            {
-                Text = score.Timestamp,
-            });
-        }
+        var scores = realm.All<Score>().OrderByDescending(s => s.Points);
 
-        flow.Add(new GameButton
+        if (scores.Any())
         {
-            Anchor = Anchor.TopCentre,
-            Origin = Anchor.TopCentre,
-            Text = "Back",
-            Action = this.Exit
-        });
+            FillFlowContainer nameColumn;
+            FillFlowContainer pointColumn;
+            FillFlowContainer modeColumn;
+            FillFlowContainer timeColumn;
+
+            scrollContainer.Child = new FillFlowContainer
+            {
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
+                AutoSizeAxes = Axes.Both,
+                Direction = FillDirection.Horizontal,
+                Spacing = new Vector2(25),
+                Children = new Drawable[]
+                {
+                    nameColumn = new ColumnFlowContainer(),
+                    pointColumn = new ColumnFlowContainer(),
+                    modeColumn = new ColumnFlowContainer(),
+                    timeColumn = new ColumnFlowContainer(),
+                }
+            };
+
+            foreach (var score in scores)
+            {
+                nameColumn.Add(new SpriteText
+                {
+                    Text = score.PlayerName,
+                });
+                pointColumn.Add(new SpriteText
+                {
+                    Text = score.Points.ToString(),
+                });
+                modeColumn.Add(new SpriteText
+                {
+                    Text = score.Mode,
+                });
+                timeColumn.Add(new SpriteText
+                {
+                    Text = score.Timestamp,
+                });
+            }
+        }
+        else
+        {
+            scrollContainer.Child = new SpriteText
+            {
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
+                Text = "No scores yet!",
+            };
+        }
     }
 
     private partial class ColumnFlowContainer : FillFlowContainer
