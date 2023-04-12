@@ -15,6 +15,7 @@ namespace BasketballBarrage.Game;
 public partial class LeaderboardScreen : GameScreen
 {
     private GameScrollContainer scrollContainer = null!;
+    private GameButton clearButton = null!;
 
     [BackgroundDependencyLoader]
     private void load()
@@ -46,16 +47,25 @@ public partial class LeaderboardScreen : GameScreen
                     },
                     new Drawable[]
                     {
-                        new Container
+                        new FillFlowContainer
                         {
                             AutoSizeAxes = Axes.Both,
                             Anchor = Anchor.TopCentre,
                             Origin = Anchor.TopCentre,
                             Padding = new MarginPadding(25),
-                            Child = new GameButton
+                            Direction = FillDirection.Horizontal,
+                            Spacing = new Vector2(25),
+                            Children = new Drawable[]
                             {
-                                Text = "Back",
-                                Action = this.Exit
+                                new GameButton
+                                {
+                                    Text = "Back",
+                                    Action = this.Exit
+                                },
+                                clearButton = new GameButton
+                                {
+                                    Text = "Clear",
+                                }
                             }
                         }
                     }
@@ -63,10 +73,22 @@ public partial class LeaderboardScreen : GameScreen
             }
         };
 
-        addContent();
+        setContent();
     }
 
-    private void addContent()
+    private void clearScores()
+    {
+        var realm = Realm.GetInstance($"{Directory.GetCurrentDirectory()}/client.realm");
+
+        realm.Write(() =>
+        {
+            realm.RemoveAll<Score>();
+        });
+
+        setContent();
+    }
+
+    private void setContent()
     {
         var realm = Realm.GetInstance($"{Directory.GetCurrentDirectory()}/client.realm");
 
@@ -114,6 +136,8 @@ public partial class LeaderboardScreen : GameScreen
                     Text = score.Timestamp,
                 });
             }
+
+            clearButton.Action = clearScores;
         }
         else
         {
@@ -123,6 +147,8 @@ public partial class LeaderboardScreen : GameScreen
                 Origin = Anchor.Centre,
                 Text = "No scores yet!",
             };
+
+            clearButton.Action = null;
         }
     }
 
