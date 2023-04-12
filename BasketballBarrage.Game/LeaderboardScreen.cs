@@ -88,10 +88,10 @@ public partial class LeaderboardScreen : GameScreen
                 Spacing = new Vector2(25),
                 Children = new Drawable[]
                 {
-                    nameColumn = new ColumnFlowContainer(),
-                    pointColumn = new ColumnFlowContainer(),
-                    modeColumn = new ColumnFlowContainer(),
-                    timeColumn = new ColumnFlowContainer(),
+                    nameColumn = new ColumnFlowContainer("Player name"),
+                    pointColumn = new ColumnFlowContainer("Points"),
+                    modeColumn = new ColumnFlowContainer("Mode"),
+                    timeColumn = new ColumnFlowContainer("Timestamp"),
                 }
             };
 
@@ -128,13 +128,27 @@ public partial class LeaderboardScreen : GameScreen
 
     private partial class ColumnFlowContainer : FillFlowContainer
     {
-        public ColumnFlowContainer()
+        private readonly string headerText;
+
+        public ColumnFlowContainer(string headerText)
         {
+            this.headerText = headerText;
+
             Anchor = Anchor.TopCentre;
             Origin = Anchor.TopCentre;
             AutoSizeAxes = Axes.Both;
             Direction = FillDirection.Vertical;
             Spacing = new Vector2(25);
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
+        {
+            Child = new SpriteText
+            {
+                Text = headerText,
+                Colour = Colour4.Gray,
+            };
         }
     }
 }
