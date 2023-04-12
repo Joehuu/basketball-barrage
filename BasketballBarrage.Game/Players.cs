@@ -18,7 +18,7 @@ public partial class Players : FillFlowContainer<Player>
     {
         this.count = count;
         AutoSizeAxes = Axes.Both;
-        Spacing = new Vector2((GameplayScreen.GAME_WIDTH - Player.WIDTH * (count - 1)) / count);
+        Spacing = new Vector2((GameplayScreen.GAME_WIDTH - Player.WIDTH * count) / (count - 1));
     }
 
     [BackgroundDependencyLoader]
