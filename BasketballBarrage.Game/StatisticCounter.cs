@@ -1,6 +1,7 @@
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
@@ -9,10 +10,19 @@ namespace BasketballBarrage.Game;
 
 public partial class StatisticCounter : Container
 {
-    private SpriteText counterText = null!;
+    private SpriteText? counterText;
     private readonly string labelString;
 
     public IBindable<int> CounterValue = new Bindable<int>();
+
+    public ColourInfo CounterColour
+    {
+        get => counterText?.Colour ?? Colour4.White;
+        set
+        {
+            if (counterText != null) counterText.Colour = value;
+        }
+    }
 
     public StatisticCounter(string labelString)
     {
@@ -58,6 +68,7 @@ public partial class StatisticCounter : Container
                         Text = "0",
                         Anchor = Anchor.TopCentre,
                         Origin = Anchor.TopCentre,
+                        Colour = CounterColour,
                     },
                 }
             }
@@ -70,7 +81,7 @@ public partial class StatisticCounter : Container
 
         CounterValue.BindValueChanged(number =>
         {
-            counterText.Text = number.NewValue.ToString();
+            if (counterText != null) counterText.Text = number.NewValue.ToString();
         }, true);
     }
 }

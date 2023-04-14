@@ -1,4 +1,7 @@
 using System;
+using System.IO;
+using System.Linq;
+using BasketballBarrage.Game.Database;
 using osu.Framework.Allocation;
 using osu.Framework.Audio.Sample;
 using osu.Framework.Bindables;
@@ -10,6 +13,7 @@ using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Screens;
 using osuTK;
+using Realms;
 
 namespace BasketballBarrage.Game;
 
@@ -39,6 +43,9 @@ public partial class GameplayScreen : GameScreen
     private SpriteText timerText = null!;
     private int rounds;
     private SpriteIcon infiniteSign = null!;
+    private StatisticCounter highScoreCounter = null!;
+    private int highScore;
+    private bool newHighScoreAchieved;
 
     public const float GAME_WIDTH = 800;
     private const int hoop_y_pos = -500;
@@ -139,11 +146,24 @@ public partial class GameplayScreen : GameScreen
                             },
                         }
                     },
-                    new StatisticCounter("Points")
+                    new FillFlowContainer
                     {
+                        AutoSizeAxes = Axes.Both,
+                        Direction = FillDirection.Horizontal,
+                        Spacing = new Vector2(5),
                         Anchor = Anchor.TopRight,
                         Origin = Anchor.TopRight,
-                        CounterValue = { BindTarget = points }
+                        Children = new Drawable[]
+                        {
+                            highScoreCounter = new StatisticCounter("High Score")
+                            {
+                                CounterValue = getHighScore(),
+                            },
+                            new StatisticCounter("Score")
+                            {
+                                CounterValue = { BindTarget = points }
+                            },
+                        }
                     },
                     new CircularContainer
                     {
@@ -196,6 +216,17 @@ public partial class GameplayScreen : GameScreen
         }
     }
 
+    private IBindable<int> getHighScore()
+    {
+        var realm = Realm.GetInstance($"{Directory.GetCurrentDirectory()}/client.realm");
+
+        var scores = realm.All<Score>().Where(s => s.Mode == mode.ToString()).OrderByDescending(s => s.Points);
+
+        highScore = scores.FirstOrDefault()?.Points ?? 0;
+
+        return new Bindable<int>(highScore);
+    }
+
     protected override void LoadComplete()
     {
         base.LoadComplete();
@@ -205,6 +236,16 @@ public partial class GameplayScreen : GameScreen
         combo.BindValueChanged(c =>
         {
             maxCombo.Value = Math.Max(maxCombo.Value, c.NewValue);
+        });
+
+        points.BindValueChanged(p =>
+        {
+            if (p.NewValue > highScore && !newHighScoreAchieved)
+            {
+                highScoreCounter.CounterValue.BindTo(points);
+                highScoreCounter.CounterColour = Colour4.LimeGreen;
+                newHighScoreAchieved = true;
+            }
         });
     }
 
