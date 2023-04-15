@@ -13,6 +13,7 @@
 - original gameplay
     - two players
     - random +10 targets
+    - coloured judgements
 
 ## Releases
 
