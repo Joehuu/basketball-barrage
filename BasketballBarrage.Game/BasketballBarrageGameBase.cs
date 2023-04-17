@@ -13,6 +13,8 @@ namespace BasketballBarrage.Game
 
         protected BasketballBarrageGameBase()
         {
+            Name = @"Basketball Barrage";
+
             base.Content.Add(Content = new DrawSizePreservingFillContainer
             {
                 TargetDrawSize = new Vector2(1366, 768)

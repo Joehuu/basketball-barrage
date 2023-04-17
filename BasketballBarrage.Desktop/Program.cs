@@ -1,6 +1,5 @@
 ﻿using osu.Framework.Platform;
 using osu.Framework;
-using BasketballBarrage.Game;
 
 namespace BasketballBarrage.Desktop
 {
@@ -9,7 +8,7 @@ namespace BasketballBarrage.Desktop
         public static void Main()
         {
             using (GameHost host = Host.GetSuitableDesktopHost(@"BasketballBarrage"))
-            using (osu.Framework.Game game = new BasketballBarrageGame())
+            using (osu.Framework.Game game = new BasketballBarrageGameDesktop())
                 host.Run(game);
         }
     }
