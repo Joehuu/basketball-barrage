@@ -1,7 +1,4 @@
 using System;
-using System.IO;
-using System.Linq;
-using BasketballBarrage.Game.Database;
 using osu.Framework.Allocation;
 using osu.Framework.Audio.Sample;
 using osu.Framework.Bindables;
@@ -13,7 +10,6 @@ using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Screens;
 using osuTK;
-using Realms;
 
 namespace BasketballBarrage.Game;
 
@@ -40,17 +36,13 @@ public partial class GameplayScreen : GameScreen
     private int basketballsVisible;
     private DateTime startTime;
     private DateTime endTime;
-    private SpriteText timerText = null!;
     private int rounds;
-    private SpriteIcon infiniteSign = null!;
-    private StatisticCounter highScoreCounter = null!;
-    private int highScore;
-    private bool newHighScoreAchieved;
+    private HUDOverlay hudOverlay = null!;
 
     public const float GAME_WIDTH = 800;
     private const int hoop_y_pos = -500;
     private const int round_transition_delay = 2000;
-    private const int classic_round_time = 30;
+    public const int CLASSIC_ROUND_TIME = 30;
 
     public GameplayScreen(GameplayMode mode)
     {
@@ -122,81 +114,12 @@ public partial class GameplayScreen : GameScreen
                     },
                 }
             },
-            new Container
+            hudOverlay = new HUDOverlay
             {
-                RelativeSizeAxes = Axes.Both,
-                Padding = new MarginPadding(5),
-                Children = new Drawable[]
-                {
-                    new FillFlowContainer
-                    {
-                        AutoSizeAxes = Axes.Both,
-                        Direction = FillDirection.Horizontal,
-                        Spacing = new Vector2(5),
-                        Children = new Drawable[]
-                        {
-                            // original game calls these run and high run, but call them combo for now
-                            new StatisticCounter("Combo")
-                            {
-                                CounterValue = { BindTarget = combo }
-                            },
-                            new StatisticCounter("Max Combo")
-                            {
-                                CounterValue = { BindTarget = maxCombo }
-                            },
-                        }
-                    },
-                    new FillFlowContainer
-                    {
-                        AutoSizeAxes = Axes.Both,
-                        Direction = FillDirection.Horizontal,
-                        Spacing = new Vector2(5),
-                        Anchor = Anchor.TopRight,
-                        Origin = Anchor.TopRight,
-                        Children = new Drawable[]
-                        {
-                            highScoreCounter = new StatisticCounter("High Score")
-                            {
-                                CounterValue = getHighScore(),
-                            },
-                            new StatisticCounter("Score")
-                            {
-                                CounterValue = { BindTarget = points }
-                            },
-                        }
-                    },
-                    new CircularContainer
-                    {
-                        Size = new Vector2(75),
-                        Masking = true,
-                        Anchor = Anchor.CentreRight,
-                        Origin = Anchor.CentreRight,
-                        Children = new Drawable[]
-                        {
-                            new Box
-                            {
-                                RelativeSizeAxes = Axes.Both,
-                                Alpha = 0.5f,
-                                Colour = Colour4.Black,
-                            },
-                            timerText = new SpriteText
-                            {
-                                Anchor = Anchor.Centre,
-                                Origin = Anchor.Centre,
-                                Font = FontUsage.Default.With(size: 50),
-                                Alpha = 0,
-                            },
-                            infiniteSign = new SpriteIcon
-                            {
-                                Anchor = Anchor.Centre,
-                                Origin = Anchor.Centre,
-                                Icon = FontAwesome.Solid.Infinity,
-                                Alpha = 0,
-                                Size = new Vector2(30),
-                            }
-                        }
-                    }
-                }
+                Combo = { BindTarget = combo },
+                MaxCombo = { BindTarget = maxCombo },
+                Points = { BindTarget = points },
+                Mode = mode,
             },
             readySetGoText = new SpriteText
             {
@@ -216,17 +139,6 @@ public partial class GameplayScreen : GameScreen
         }
     }
 
-    private IBindable<int> getHighScore()
-    {
-        var realm = Realm.GetInstance($"{Directory.GetCurrentDirectory()}/client.realm");
-
-        var scores = realm.All<Score>().Where(s => s.Mode == mode.ToString()).OrderByDescending(s => s.Points);
-
-        highScore = scores.FirstOrDefault()?.Points ?? 0;
-
-        return new Bindable<int>(highScore);
-    }
-
     protected override void LoadComplete()
     {
         base.LoadComplete();
@@ -236,16 +148,6 @@ public partial class GameplayScreen : GameScreen
         combo.BindValueChanged(c =>
         {
             maxCombo.Value = Math.Max(maxCombo.Value, c.NewValue);
-        });
-
-        points.BindValueChanged(p =>
-        {
-            if (p.NewValue > highScore && !newHighScoreAchieved)
-            {
-                highScoreCounter.CounterValue.BindTo(points);
-                highScoreCounter.CounterColour = Colour4.LimeGreen;
-                newHighScoreAchieved = true;
-            }
         });
     }
 
@@ -269,20 +171,14 @@ public partial class GameplayScreen : GameScreen
                 startTime = DateTime.Now;
 
                 // based on original game
-                endTime = startTime + TimeSpan.FromSeconds(classic_round_time + 1);
+                endTime = startTime + TimeSpan.FromSeconds(CLASSIC_ROUND_TIME + 1);
             }
         }, round_transition_delay);
     }
 
     private void prepareForRound()
     {
-        if (mode == GameplayMode.Classic)
-        {
-            timerText.Alpha = 1;
-            timerText.Text = classic_round_time.ToString();
-        }
-        else
-            infiniteSign.Alpha = 1;
+        hudOverlay.ResetTimer(mode);
 
         combo.Value = 0;
         hoopContainer.MoveToX(GAME_WIDTH / 2f);
@@ -322,7 +218,7 @@ public partial class GameplayScreen : GameScreen
         {
             var secondsLeft = (endTime - DateTime.Now).Seconds;
 
-            timerText.Text = secondsLeft.ToString();
+            hudOverlay.UpdateTimer(secondsLeft.ToString());
 
             if (secondsLeft <= 0)
                 endGame();
