@@ -230,7 +230,7 @@ public partial class GameplayScreen : GameScreen
         if (!gameInProgress.Value) return;
 
         readySetGoText.Colour = Colour4.White;
-        readySetGoText.Text = "Game over";
+        readySetGoText.Text = rounds == 1 ? "Game over!" : "Time out!";
         readySetGoText.Pop(600, 1000);
 
         Scheduler.AddDelayed(() =>
