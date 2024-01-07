@@ -14,7 +14,7 @@ public partial class GameTextBox : BasicTextBox
     protected override Drawable GetDrawableCharacter(char c) => new FallingDownContainer
     {
         AutoSizeAxes = Axes.Both,
-        Child = new SpriteText { Text = c.ToString(), Font = FontUsage.Default.With(size: CalculatedTextSize) }
+        Child = new SpriteText { Text = c.ToString(), Font = FontUsage.Default.With(size: FontSize) }
     };
 
     protected override SpriteText CreatePlaceholder() => new FadingPlaceholderText
