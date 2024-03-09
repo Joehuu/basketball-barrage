@@ -38,6 +38,9 @@ public partial class GameplayScreen : GameScreen
     private DateTime endTime;
     private int rounds;
     private HUDOverlay hudOverlay = null!;
+    private BonusTarget? bonusTarget;
+    private int bonusTargetPos;
+    private bool bonusTargetHit;
 
     public const float GAME_WIDTH = 800;
     private const int hoop_y_pos = -500;
@@ -135,7 +138,8 @@ public partial class GameplayScreen : GameScreen
         {
             var player = players[i];
             var isEdge = i == 0 || i == players.Count - 1;
-            player.ShootBasketball = () => spawnBasketBall(player, isEdge);
+            var playerIndex = i;
+            player.ShootBasketball = () => spawnBasketBall(player, isEdge, playerIndex);
         }
     }
 
@@ -214,6 +218,9 @@ public partial class GameplayScreen : GameScreen
     {
         base.UpdateAfterChildren();
 
+        if (gameInProgress.Value)
+            spawnBonusTarget();
+
         if (mode == GameplayMode.Classic && gameInProgress.Value)
         {
             var secondsLeft = (endTime - DateTime.Now).Seconds;
@@ -223,6 +230,25 @@ public partial class GameplayScreen : GameScreen
             if (secondsLeft <= 0)
                 endGame();
         }
+    }
+
+    private void spawnBonusTarget()
+    {
+        var rand = new Random();
+
+        if (rand.Next(1, 10000) != 1 || bonusTarget != null) return;
+
+        bonusTargetPos = new Random().Next(0, players.Count);
+        gameContainer.Add(bonusTarget = new BonusTarget
+        {
+            Anchor = Anchor.BottomLeft,
+            Origin = Anchor.Centre,
+            X = gameContainer.ToLocalSpace(players[bonusTargetPos].ScreenSpaceDrawQuad.Centre).X,
+            Y = hoop_y_pos - 50,
+            Alpha = 0,
+        });
+
+        bonusTarget.FadeIn(250, Easing.OutQuint);
     }
 
     private void endGame()
@@ -256,7 +282,7 @@ public partial class GameplayScreen : GameScreen
             hoop.Hide();
     }
 
-    private void spawnBasketBall(IDrawable player, bool extraPoint)
+    private void spawnBasketBall(IDrawable player, bool extraPoint, int playerIndex)
     {
         basketballsVisible++;
         throwSample.Play();
@@ -287,6 +313,27 @@ public partial class GameplayScreen : GameScreen
         gameContainer.Add(basketball);
 
         basketball.X = gameContainer.ToLocalSpace(player.ScreenSpaceDrawQuad.Centre).X;
+
+        if (bonusTarget != null && bonusTargetPos == playerIndex && !bonusTargetHit)
+        {
+            bonusTargetHit = true;
+
+            basketball.MoveToY(hoop_y_pos, 1000, Easing.OutQuint).Then().FadeOut().Expire();
+            bonusTarget.FadeOut(1000, Easing.InQuint).ScaleTo(1.2f, 1000, Easing.OutQuint).OnComplete(_ =>
+            {
+                const int earned_points = 10;
+                points.Value += earned_points;
+
+                pointEarnedText.Text = earned_points.ToString();
+                pointEarnedText.Position = bonusTarget.Position + new Vector2(0, 100);
+                pointEarnedText.Pop();
+
+                bonusTarget = null;
+                bonusTargetHit = false;
+            });
+
+            return;
+        }
 
         basketball.MoveToY(hoop_y_pos, 1000, Easing.OutBack)
                   .ScaleTo(0.9f, 1000)
