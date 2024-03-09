@@ -1,4 +1,5 @@
-﻿using osu.Framework.Allocation;
+﻿using System.Linq;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
 
@@ -17,6 +18,10 @@ namespace BasketballBarrage.Game
         protected override void LoadComplete()
         {
             base.LoadComplete();
+
+            // some hacky workaround to hot reload not working with Realm installed
+            // ref: https://github.com/realm/realm-dotnet/issues/3213
+            _ = Enumerable.Range(0, 1).Where(c => c > 0).ToList().AsQueryable().FirstOrDefault();
 
             screenStack.Push(new MainScreen());
 
