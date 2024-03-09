@@ -11,7 +11,7 @@ namespace BasketballBarrage.Game;
 
 public partial class Hoop : VisibilityContainer
 {
-    public IBindable<int> Combo = new Bindable<int>();
+    public readonly IBindable<int> Combo = new Bindable<int>();
     private FillFlowContainer flow = null!;
 
     public Hoop()

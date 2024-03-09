@@ -18,7 +18,7 @@ public partial class Player : ClickableContainer
 
     public const float WIDTH = 100;
 
-    public readonly Bindable<bool> GameInProgress = new Bindable<bool>();
+    public readonly IBindable<bool> GameInProgress = new Bindable<bool>();
 
     public Player()
     {

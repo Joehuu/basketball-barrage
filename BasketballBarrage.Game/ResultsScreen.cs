@@ -15,7 +15,7 @@ namespace BasketballBarrage.Game;
 
 public partial class ResultsScreen : GameScreen
 {
-    public IBindable<int> Points = new Bindable<int>();
+    public readonly IBindable<int> Points = new Bindable<int>();
     private GameTextBox nameTextBox = null!;
     private GameButton submitButton = null!;
     private readonly GameplayMode mode;

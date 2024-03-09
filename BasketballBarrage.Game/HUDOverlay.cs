@@ -21,9 +21,9 @@ public partial class HUDOverlay : Container
     private int highScore;
     private bool newHighScoreAchieved;
 
-    public IBindable<int> Combo = new Bindable<int>();
-    public IBindable<int> MaxCombo = new Bindable<int>();
-    public IBindable<int> Points = new Bindable<int>();
+    public readonly IBindable<int> Combo = new Bindable<int>();
+    public readonly IBindable<int> MaxCombo = new Bindable<int>();
+    public readonly IBindable<int> Points = new Bindable<int>();
 
     public GameplayMode Mode { get; init; }
 
@@ -63,7 +63,7 @@ public partial class HUDOverlay : Container
                 {
                     highScoreCounter = new StatisticCounter("High Score")
                     {
-                        CounterValue = getHighScore(),
+                        CounterValue = { BindTarget = getHighScore() },
                     },
                     new StatisticCounter("Score")
                     {

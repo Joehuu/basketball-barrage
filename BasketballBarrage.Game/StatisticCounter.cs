@@ -13,7 +13,7 @@ public partial class StatisticCounter : Container
     private SpriteText? counterText;
     private readonly string labelString;
 
-    public IBindable<int> CounterValue = new Bindable<int>();
+    public readonly IBindable<int> CounterValue = new Bindable<int>();
 
     public ColourInfo CounterColour
     {

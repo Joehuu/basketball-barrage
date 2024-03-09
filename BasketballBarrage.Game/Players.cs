@@ -12,7 +12,7 @@ public partial class Players : FillFlowContainer<Player>
 {
     private readonly int count;
 
-    public readonly Bindable<bool> GameInProgress = new Bindable<bool>();
+    public readonly IBindable<bool> GameInProgress = new Bindable<bool>();
 
     public Players(int count = 5)
     {
