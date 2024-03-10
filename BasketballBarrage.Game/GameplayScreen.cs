@@ -387,7 +387,7 @@ public partial class GameplayScreen : GameScreen
 
     private void scorePoints(Basketball basketball, bool extraPoint)
     {
-        // TODO: implement logic when ball hits hoop
+        // TODO: implement logic when ball hits rim
         const int lenience_range = 50;
 
         var difference = basketball.X - hoopContainer.X;
