@@ -9,6 +9,7 @@ using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Screens;
+using osu.Framework.Utils;
 using osuTK;
 
 namespace BasketballBarrage.Game;
@@ -41,6 +42,7 @@ public partial class GameplayScreen : GameScreen
     private BonusTarget? bonusTarget;
     private int bonusTargetPos;
     private bool bonusTargetHit;
+    private int hoopDirection = 1;
 
     public const float GAME_WIDTH = 800;
     private const int hoop_y_pos = -500;
@@ -152,6 +154,9 @@ public partial class GameplayScreen : GameScreen
         combo.BindValueChanged(c =>
         {
             maxCombo.Value = Math.Max(maxCombo.Value, c.NewValue);
+
+            if (c.NewValue % 5 == 0)
+                loopHoop(c.NewValue);
         });
     }
 
@@ -160,13 +165,9 @@ public partial class GameplayScreen : GameScreen
         prepareForRound();
         displayInstruction();
 
-        // TODO: speed up when combo increases
         Scheduler.AddDelayed(() =>
         {
-            hoopContainer.MoveToX(GAME_WIDTH, 3000).Then()
-                         .MoveToX(0, 6000).Then()
-                         .MoveToX(GAME_WIDTH / 2f, 3000).Then()
-                         .Loop();
+            loopHoop(combo.Value);
 
             gameInProgress.Value = true;
 
@@ -180,6 +181,44 @@ public partial class GameplayScreen : GameScreen
         }, round_transition_delay);
     }
 
+    private void loopHoop(int currentCombo)
+    {
+        var currentHoopX = hoopContainer.X;
+
+        float secondsPerLoop;
+
+        switch (currentCombo)
+        {
+            case >= 20:
+                secondsPerLoop = 3000;
+                break;
+
+            case >= 15:
+                secondsPerLoop = 3500;
+                break;
+
+            case >= 10:
+                secondsPerLoop = 4000;
+                break;
+
+            case >= 5:
+                secondsPerLoop = 5000;
+                break;
+
+            default:
+                secondsPerLoop = 6000;
+                break;
+        }
+
+        var rightDuration = secondsPerLoop * ((GAME_WIDTH - currentHoopX) / GAME_WIDTH);
+        var leftDuration = secondsPerLoop * (currentHoopX / GAME_WIDTH);
+
+        hoopContainer.MoveToX(hoopDirection == 1 ? GAME_WIDTH : 0, hoopDirection == 1 ? rightDuration : leftDuration).Then()
+                     .MoveToX(hoopDirection == 1 ? 0 : GAME_WIDTH, secondsPerLoop).Then()
+                     .MoveToX(currentHoopX, hoopDirection == 1 ? leftDuration : rightDuration).Then()
+                     .Loop();
+    }
+
     private void prepareForRound()
     {
         hudOverlay.ResetTimer(mode);
@@ -188,6 +227,7 @@ public partial class GameplayScreen : GameScreen
         hoopContainer.MoveToX(GAME_WIDTH / 2f);
         players.FadeIn(TRANSITION_DURATION, Easing.OutQuint).MoveToY(players.Height).MoveToY(0, TRANSITION_DURATION, Easing.OutQuint);
         hoop.Show();
+        hoopDirection = 1;
     }
 
     private void displayInstruction()
@@ -230,6 +270,11 @@ public partial class GameplayScreen : GameScreen
             if (secondsLeft <= 0)
                 endGame();
         }
+
+        if (Precision.AlmostEquals(hoopContainer.X, GAME_WIDTH, 1))
+            hoopDirection = -1;
+        else if (Precision.AlmostEquals(hoopContainer.X, 0, 1))
+            hoopDirection = 1;
     }
 
     private void spawnBonusTarget()
