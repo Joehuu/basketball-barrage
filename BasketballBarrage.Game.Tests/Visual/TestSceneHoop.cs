@@ -9,6 +9,8 @@ namespace BasketballBarrage.Game.Tests.Visual
     {
         public TestSceneHoop()
         {
+            Hoop hoop;
+
             Children = new Drawable[]
             {
                 new Box
@@ -16,12 +18,14 @@ namespace BasketballBarrage.Game.Tests.Visual
                     RelativeSizeAxes = Axes.Both,
                     Colour = Colour4.DimGray,
                 },
-                new Hoop
+                hoop = new Hoop
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
                 }
             };
+
+            hoop.Show();
         }
     }
 }
