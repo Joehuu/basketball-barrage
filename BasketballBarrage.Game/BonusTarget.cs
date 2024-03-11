@@ -1,6 +1,7 @@
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osuTK;
@@ -26,6 +27,13 @@ public partial class BonusTarget : CompositeDrawable
                 Scale = new Vector2(0.95f),
                 Masking = true,
                 RelativeSizeAxes = Axes.Both,
+                EdgeEffect = new EdgeEffectParameters
+                {
+                    Type = EdgeEffectType.Shadow,
+                    Radius = 6,
+                    Colour = Colour4.Black,
+                    Hollow = true,
+                },
                 Child = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
