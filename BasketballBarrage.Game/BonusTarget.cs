@@ -11,7 +11,10 @@ namespace BasketballBarrage.Game;
 /// <summary>
 /// A target that appears randomly and is worth <see cref="POINTS"/>.
 /// </summary>
-public partial class BonusTarget : CompositeDrawable
+/// <remarks>
+/// Needs to be a buffered container for fade to show correctly. Not overly concerned on performance right now.
+/// </remarks>
+public partial class BonusTarget : BufferedContainer
 {
     public const int POINTS = 10;
 
