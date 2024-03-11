@@ -46,15 +46,42 @@ public partial class ModeScreen : GameScreen
                         Origin = Anchor.TopCentre,
                         Children = new Drawable[]
                         {
-                            new GameButton
+                            new SpriteText
                             {
                                 Text = "Classic",
-                                Action = () => this.Push(new GameplayScreen(GameplayMode.Classic)),
+                                Anchor = Anchor.CentreLeft,
+                                Origin = Anchor.CentreLeft,
                             },
-                            new GameButton
+                            new IconButton
+                            {
+                                Icon = FontAwesome.Solid.User,
+                                Action = () => this.Push(new GameplayScreen(GameplayMode.Classic)),
+                                Anchor = Anchor.CentreLeft,
+                                Origin = Anchor.CentreLeft,
+                            },
+                        }
+                    },
+                    new FillFlowContainer
+                    {
+                        AutoSizeAxes = Axes.Both,
+                        Direction = FillDirection.Horizontal,
+                        Spacing = new Vector2(25),
+                        Anchor = Anchor.TopCentre,
+                        Origin = Anchor.TopCentre,
+                        Children = new Drawable[]
+                        {
+                            new SpriteText
                             {
                                 Text = "Endless",
+                                Anchor = Anchor.CentreLeft,
+                                Origin = Anchor.CentreLeft,
+                            },
+                            new IconButton
+                            {
+                                Icon = FontAwesome.Solid.User,
                                 Action = () => this.Push(new GameplayScreen(GameplayMode.Endless)),
+                                Anchor = Anchor.CentreLeft,
+                                Origin = Anchor.CentreLeft,
                             },
                         }
                     },
