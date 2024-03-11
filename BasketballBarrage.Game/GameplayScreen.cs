@@ -366,10 +366,9 @@ public partial class GameplayScreen : GameScreen
             basketball.MoveToY(hoop_y_pos, 1000, Easing.OutQuint).Then().FadeOut().Expire();
             bonusTarget.FadeOut(1000, Easing.InQuint).ScaleTo(1.2f, 1000, Easing.OutQuint).OnComplete(_ =>
             {
-                const int earned_points = 10;
-                points.Value += earned_points;
+                points.Value += BonusTarget.POINTS;
 
-                pointEarnedText.Text = earned_points.ToString();
+                pointEarnedText.Text = BonusTarget.POINTS.ToString();
                 pointEarnedText.Position = bonusTarget.Position + new Vector2(0, 100);
                 pointEarnedText.Pop();
 

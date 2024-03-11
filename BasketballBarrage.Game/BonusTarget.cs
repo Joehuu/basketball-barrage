@@ -8,8 +8,13 @@ using osuTK;
 
 namespace BasketballBarrage.Game;
 
+/// <summary>
+/// A target that appears randomly and is worth <see cref="POINTS"/>.
+/// </summary>
 public partial class BonusTarget : CompositeDrawable
 {
+    public const int POINTS = 10;
+
     public BonusTarget()
     {
         AutoSizeAxes = Axes.Both;
