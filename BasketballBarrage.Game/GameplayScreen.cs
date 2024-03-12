@@ -18,7 +18,7 @@ public partial class GameplayScreen : GameScreen
 {
     private Players players = null!;
 
-    private readonly Bindable<bool> gameInProgress = new Bindable<bool>();
+    private readonly Bindable<bool> roundInProgress = new Bindable<bool>();
 
     private readonly Bindable<int> points = new Bindable<int>();
 
@@ -94,7 +94,7 @@ public partial class GameplayScreen : GameScreen
                     {
                         Anchor = Anchor.BottomCentre,
                         Origin = Anchor.BottomCentre,
-                        GameInProgress = { BindTarget = gameInProgress },
+                        GameInProgress = { BindTarget = roundInProgress },
                         Alpha = 0,
                     },
                     hoopContainer = new Container
@@ -149,7 +149,7 @@ public partial class GameplayScreen : GameScreen
     {
         base.LoadComplete();
 
-        startGame();
+        startRound();
 
         combo.BindValueChanged(c =>
         {
@@ -160,7 +160,7 @@ public partial class GameplayScreen : GameScreen
         });
     }
 
-    private void startGame()
+    private void startRound()
     {
         prepareForRound();
         displayInstruction();
@@ -169,7 +169,7 @@ public partial class GameplayScreen : GameScreen
         {
             loopHoop(combo.Value);
 
-            gameInProgress.Value = true;
+            roundInProgress.Value = true;
 
             if (mode == GameplayMode.Classic)
             {
@@ -258,17 +258,17 @@ public partial class GameplayScreen : GameScreen
     {
         base.UpdateAfterChildren();
 
-        if (gameInProgress.Value)
+        if (roundInProgress.Value)
             spawnBonusTarget();
 
-        if (mode == GameplayMode.Classic && gameInProgress.Value)
+        if (mode == GameplayMode.Classic && roundInProgress.Value)
         {
             var secondsLeft = (endTime - DateTime.Now).Seconds;
 
             hudOverlay.UpdateTimer(secondsLeft.ToString());
 
             if (secondsLeft <= 0)
-                endGame();
+                endRound();
         }
 
         if (Precision.AlmostEquals(hoopContainer.X, GAME_WIDTH, 1))
@@ -296,9 +296,9 @@ public partial class GameplayScreen : GameScreen
         bonusTarget.FadeIn(250, Easing.OutQuint);
     }
 
-    private void endGame()
+    private void endRound()
     {
-        if (!gameInProgress.Value) return;
+        if (!roundInProgress.Value) return;
 
         readySetGoText.Colour = Colour4.White;
         readySetGoText.Text = rounds == 1 ? "Game over!" : "Time out!";
@@ -316,10 +316,10 @@ public partial class GameplayScreen : GameScreen
                 });
             }
             else
-                startGame();
+                startRound();
         }, round_transition_delay);
 
-        gameInProgress.Value = false;
+        roundInProgress.Value = false;
 
         players.MoveToY(players.Height, TRANSITION_DURATION, Easing.OutQuint).FadeOut(TRANSITION_DURATION, Easing.OutQuint);
 
@@ -412,14 +412,14 @@ public partial class GameplayScreen : GameScreen
         {
             combo.Value = 0;
             if (mode == GameplayMode.Endless)
-                endGame();
+                endRound();
         }
 
         basketball.FadeOut(300, Easing.OutQuint).OnComplete(b =>
         {
             basketballsVisible--;
 
-            if (!gameInProgress.Value && basketballsVisible == 0)
+            if (!roundInProgress.Value && basketballsVisible == 0)
                 hoop.Hide();
 
             b.Expire();
