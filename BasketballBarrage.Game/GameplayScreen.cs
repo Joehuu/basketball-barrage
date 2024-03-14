@@ -348,6 +348,7 @@ public partial class GameplayScreen : GameScreen
         {
             Anchor = Anchor.BottomLeft,
             Origin = Anchor.BottomCentre,
+            IsFrog = points.Value >= 150
         };
 
         if (combo.Value >= 3)
@@ -359,12 +360,6 @@ public partial class GameplayScreen : GameScreen
                 Colour = Colour4.Red,
                 Hollow = true,
             };
-        }
-
-        if (points.Value >= 150)
-        {
-            // TODO: implement proper "frogs" or whatever
-            basketball.Colour = Colour4.Green;
         }
 
         gameContainer.Add(basketball);

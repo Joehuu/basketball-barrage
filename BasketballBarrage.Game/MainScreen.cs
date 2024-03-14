@@ -1,5 +1,6 @@
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.UserInterface;
@@ -30,10 +31,15 @@ namespace BasketballBarrage.Game
                     Origin = Anchor.Centre,
                     Children = new Drawable[]
                     {
-                        new MenuBasketball
+                        new Container
                         {
-                            Anchor = Anchor.TopCentre,
-                            Origin = Anchor.TopCentre,
+                            AutoSizeAxes = Axes.Both,
+                            Colour = ColourInfo.GradientHorizontal(Colour4.White, Colour4.Black),
+                            Child = new Basketball
+                            {
+                                Scale = new Vector2(5),
+                                IsInteractive = true,
+                            }
                         },
                         new SpriteText
                         {
@@ -99,23 +105,6 @@ namespace BasketballBarrage.Game
         {
             flow.TransformSpacingTo(new Vector2(150)).TransformSpacingTo(new Vector2(25), TRANSITION_DURATION, Easing.OutQuint);
             flow.FadeInFromZero(TRANSITION_DURATION, Easing.OutQuint);
-        }
-
-        private partial class MenuBasketball : Basketball
-        {
-            protected override bool OnHover(HoverEvent e)
-            {
-                this.FadeColour(Colour4.Green, 500, Easing.OutQuint);
-
-                return base.OnHover(e);
-            }
-
-            protected override void OnHoverLost(HoverLostEvent e)
-            {
-                base.OnHoverLost(e);
-
-                this.FadeColour(BaseColour, 500, Easing.OutQuint);
-            }
         }
     }
 }
