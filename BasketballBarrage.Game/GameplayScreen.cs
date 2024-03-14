@@ -363,17 +363,23 @@ public partial class GameplayScreen : GameScreen
         {
             bonusTargetHit = true;
 
-            basketball.MoveToY(hoop_y_pos, 1000, Easing.OutQuint).Then().FadeOut().Expire();
-            bonusTarget.FadeOut(1000, Easing.InQuint).ScaleTo(1.2f, 1000, Easing.OutQuint).OnComplete(_ =>
+            basketball.MoveToY(hoop_y_pos, 500, Easing.OutQuad).Then().OnComplete(b =>
             {
-                points.Value += BonusTarget.POINTS;
+                basketballsVisible--;
 
-                pointEarnedText.Text = BonusTarget.POINTS.ToString();
-                pointEarnedText.Position = bonusTarget.Position + new Vector2(0, 100);
-                pointEarnedText.Pop();
+                b.FadeOut(300, Easing.OutQuint).Expire();
 
-                bonusTarget = null;
-                bonusTargetHit = false;
+                bonusTarget.FadeOut(300, Easing.InQuint).ScaleTo(1.5f, 300, Easing.OutQuad).OnComplete(_ =>
+                {
+                    points.Value += BonusTarget.POINTS;
+
+                    pointEarnedText.Text = BonusTarget.POINTS.ToString();
+                    pointEarnedText.Position = bonusTarget.Position + new Vector2(0, 100);
+                    pointEarnedText.Pop();
+
+                    bonusTarget = null;
+                    bonusTargetHit = false;
+                });
             });
 
             return;
