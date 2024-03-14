@@ -1,4 +1,5 @@
 using System;
+using BasketballBarrage.Game.UI;
 using osu.Framework.Allocation;
 using osu.Framework.Audio.Sample;
 using osu.Framework.Bindables;
@@ -29,7 +30,7 @@ public partial class GameplayScreen : GameScreen
     private readonly int[] pointsArray;
 
     private Hoop hoop = null!;
-    private SpriteText pointEarnedText = null!;
+    private PointsEarnedText pointsEarnedText = null!;
     private Container gameContainer = null!;
     private Sample scoreSample = null!;
     private Sample throwSample = null!;
@@ -115,14 +116,7 @@ public partial class GameplayScreen : GameScreen
                             Alpha = 0,
                         },
                     },
-                    pointEarnedText = new SpriteText
-                    {
-                        Anchor = Anchor.BottomLeft,
-                        Origin = Anchor.BottomCentre,
-                        Font = FontUsage.Default.With(size: 50),
-                        Alpha = 0,
-                        Shadow = true,
-                    },
+                    pointsEarnedText = new PointsEarnedText(),
                 }
             },
             hudOverlay = new HUDOverlay
@@ -391,9 +385,7 @@ public partial class GameplayScreen : GameScreen
                 {
                     points.Value += BonusTarget.POINTS;
 
-                    pointEarnedText.Text = BonusTarget.POINTS.ToString();
-                    pointEarnedText.Position = bonusTarget.Position + new Vector2(0, 100);
-                    pointEarnedText.Pop();
+                    pointsEarnedText.PopPoints(BonusTarget.POINTS, bonusTarget.Position + new Vector2(0, 100));
 
                     bonusTarget = null;
                     bonusTargetHit = false;
@@ -426,9 +418,7 @@ public partial class GameplayScreen : GameScreen
 
             points.Value += earnedPoints;
 
-            pointEarnedText.Text = earnedPoints.ToString();
-            pointEarnedText.Position = hoopContainer.Position + new Vector2(0, 100);
-            pointEarnedText.Pop();
+            pointsEarnedText.PopPoints(earnedPoints, hoopContainer.Position + new Vector2(0, 100));
 
             combo.Value++;
         }
