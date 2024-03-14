@@ -23,6 +23,7 @@ public partial class Player : ClickableContainer
     public Player()
     {
         AutoSizeAxes = Axes.Both;
+        Masking = true;
     }
 
     [BackgroundDependencyLoader]
@@ -64,7 +65,18 @@ public partial class Player : ClickableContainer
 
     private void updateState()
     {
-        Colour = IsHovered ? Colour4.Aqua : Colour4.White;
+        if (IsHovered)
+        {
+            EdgeEffect = new EdgeEffectParameters
+            {
+                Type = EdgeEffectType.Glow,
+                Radius = 20,
+                Colour = Colour4.White,
+                Hollow = true,
+            };
+        }
+        else
+            EdgeEffect = new EdgeEffectParameters();
     }
 
     protected override bool OnHover(HoverEvent e)
