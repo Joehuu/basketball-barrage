@@ -17,6 +17,29 @@ public partial class PointsEarnedText : SpriteText
 
     public void PopPoints(int points, Vector2 position)
     {
+        switch (points)
+        {
+            case 2:
+                Colour = Colour4.LightYellow;
+                break;
+
+            case 3:
+                Colour = Colour4.Yellow;
+                break;
+
+            case 4:
+                Colour = Colour4.Orange;
+                break;
+
+            case 5:
+                Colour = Colour4.OrangeRed;
+                break;
+
+            default:
+                Colour = Colour4.White;
+                break;
+        }
+
         Text = points.ToString();
         Position = position;
         this.Pop();

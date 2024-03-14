@@ -8,11 +8,6 @@
 
 ![Gameplay](assets/gameplay.png)
 
-## Missing features
-
-- original gameplay
-    - coloured judgements
-
 ## Releases
 
 The following command is used to make the binaries:
