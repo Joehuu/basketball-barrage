@@ -59,6 +59,13 @@ public partial class ModeScreen : GameScreen
                                 Anchor = Anchor.CentreLeft,
                                 Origin = Anchor.CentreLeft,
                             },
+                            new IconButton
+                            {
+                                Icon = FontAwesome.Solid.UserFriends,
+                                Action = () => this.Push(new GameplayScreen(GameplayMode.Classic, isTwoPlayers: true)),
+                                Anchor = Anchor.CentreLeft,
+                                Origin = Anchor.CentreLeft,
+                            },
                         }
                     },
                     new FillFlowContainer

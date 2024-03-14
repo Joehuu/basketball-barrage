@@ -11,7 +11,6 @@
 ## Missing features
 
 - original gameplay
-    - two players
     - coloured judgements
 
 ## Releases

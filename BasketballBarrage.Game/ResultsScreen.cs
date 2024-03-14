@@ -15,15 +15,17 @@ namespace BasketballBarrage.Game;
 
 public partial class ResultsScreen : GameScreen
 {
-    public readonly IBindable<int> Points = new Bindable<int>();
-    private GameTextBox nameTextBox = null!;
-    private GameButton submitButton = null!;
     private readonly GameplayMode mode;
     private readonly DateTime finishedTime;
+    private readonly bool isTwoPlayers;
+    private FillFlowContainer flow = null!;
+    private readonly int[] pointsArray;
 
-    public ResultsScreen(GameplayMode mode)
+    public ResultsScreen(GameplayMode mode, int[] pointsArray, bool isTwoPlayers)
     {
         this.mode = mode;
+        this.pointsArray = pointsArray;
+        this.isTwoPlayers = isTwoPlayers;
 
         finishedTime = DateTime.Now;
     }
@@ -38,84 +40,110 @@ public partial class ResultsScreen : GameScreen
                 RelativeSizeAxes = Axes.Both,
                 Colour = Colour4.DimGray,
             },
-            new FillFlowContainer
+            flow = new FillFlowContainer
             {
                 AutoSizeAxes = Axes.Both,
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
-                Direction = FillDirection.Vertical,
-                Spacing = new Vector2(25),
-                Children = new Drawable[]
+                Direction = FillDirection.Horizontal,
+                Spacing = new Vector2(10),
+            }
+        };
+
+        flow.Add(createOptions());
+
+        if (isTwoPlayers)
+            flow.Add(createOptions(true));
+    }
+
+    private Drawable createOptions(bool isPlayerTwo = false)
+    {
+        GameTextBox nameTextBox;
+        GameButton submitButton;
+
+        string playerLabel = isPlayerTwo ? "P2" : "P1";
+
+        var options = new FillFlowContainer
+        {
+            AutoSizeAxes = Axes.Both,
+            Anchor = Anchor.Centre,
+            Origin = Anchor.Centre,
+            Direction = FillDirection.Vertical,
+            Spacing = new Vector2(25),
+            Children = new Drawable[]
+            {
+                new StatisticCounter($"{playerLabel} Points")
                 {
-                    new StatisticCounter("Points")
+                    Anchor = Anchor.TopCentre,
+                    Origin = Anchor.TopCentre,
+                    CounterValue = { BindTarget = new Bindable<int>(pointsArray[isPlayerTwo ? 1 : 0]) },
+                },
+                nameTextBox = new GameTextBox
+                {
+                    Anchor = Anchor.TopCentre,
+                    Origin = Anchor.TopCentre,
+                    PlaceholderText = "Name",
+                    Size = new Vector2(200, 50),
+                },
+                submitButton = new GameButton
+                {
+                    Anchor = Anchor.TopCentre,
+                    Origin = Anchor.TopCentre,
+                    Text = "Submit",
+                },
+                new GameButton
+                {
+                    Anchor = Anchor.TopCentre,
+                    Origin = Anchor.TopCentre,
+                    Text = "Leaderboards",
+                    Action = () => this.Push(new LeaderboardScreen()),
+                },
+                new GameButton
+                {
+                    Anchor = Anchor.TopCentre,
+                    Origin = Anchor.TopCentre,
+                    Text = "Retry",
+                    Action = () =>
                     {
-                        Anchor = Anchor.TopCentre,
-                        Origin = Anchor.TopCentre,
-                        CounterValue = { BindTarget = Points },
+                        ValidForResume = false;
+                        this.Push(new GameplayScreen(mode, isTwoPlayers));
                     },
-                    nameTextBox = new GameTextBox
-                    {
-                        Anchor = Anchor.TopCentre,
-                        Origin = Anchor.TopCentre,
-                        PlaceholderText = "Name",
-                        Size = new Vector2(200, 50),
-                    },
-                    submitButton = new GameButton
-                    {
-                        Anchor = Anchor.TopCentre,
-                        Origin = Anchor.TopCentre,
-                        Text = "Submit",
-                        Action = submitScore
-                    },
-                    new GameButton
-                    {
-                        Anchor = Anchor.TopCentre,
-                        Origin = Anchor.TopCentre,
-                        Text = "Leaderboards",
-                        Action = () => this.Push(new LeaderboardScreen()),
-                    },
-                    new GameButton
-                    {
-                        Anchor = Anchor.TopCentre,
-                        Origin = Anchor.TopCentre,
-                        Text = "Retry",
-                        Action = () =>
-                        {
-                            ValidForResume = false;
-                            this.Push(new GameplayScreen(mode));
-                        },
-                    },
-                    new GameButton
-                    {
-                        Anchor = Anchor.TopCentre,
-                        Origin = Anchor.TopCentre,
-                        Text = "Back",
-                        Action = this.Exit
-                    },
-                }
+                },
+                new GameButton
+                {
+                    Anchor = Anchor.TopCentre,
+                    Origin = Anchor.TopCentre,
+                    Text = "Back",
+                    Action = this.Exit
+                },
             }
         };
 
         nameTextBox.OnCommit += (_, _) => submitButton.TriggerClick();
+        submitButton.Action = () =>
+        {
+            if (string.IsNullOrWhiteSpace(nameTextBox.Text)) return;
+
+            submitScore(nameTextBox.Text, isPlayerTwo);
+            submitButton.Enabled.Value = false;
+        };
+
+        return options;
     }
 
-    private void submitScore()
+    private void submitScore(string playerName, bool isPlayerTwo)
     {
-        if (string.IsNullOrWhiteSpace(nameTextBox.Text)) return;
-
         var realm = Realm.GetInstance($"{Directory.GetCurrentDirectory()}/client.realm");
 
         realm.Write(() =>
         {
             realm.Add(new Score
             {
-                PlayerName = nameTextBox.Text,
-                Points = Points.Value,
+                PlayerName = playerName,
+                Points = pointsArray[isPlayerTwo ? 1 : 0],
                 Mode = mode.ToString(),
                 Timestamp = finishedTime.ToString(CultureInfo.InvariantCulture),
             });
         });
-
-        submitButton.Enabled.Value = false;
     }
 }

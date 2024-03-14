@@ -26,6 +26,8 @@ public partial class GameplayScreen : GameScreen
 
     private readonly Bindable<int> maxCombo = new Bindable<int>();
 
+    private readonly int[] pointsArray;
+
     private Hoop hoop = null!;
     private SpriteText pointEarnedText = null!;
     private Container gameContainer = null!;
@@ -43,15 +45,19 @@ public partial class GameplayScreen : GameScreen
     private int bonusTargetPos;
     private bool bonusTargetHit;
     private int hoopDirection = 1;
+    private readonly bool isTwoPlayers;
+    private int currentPlayer;
 
     public const float GAME_WIDTH = 800;
     private const int hoop_y_pos = -500;
     private const int round_transition_delay = 2000;
     public const int CLASSIC_ROUND_TIME = 30;
 
-    public GameplayScreen(GameplayMode mode)
+    public GameplayScreen(GameplayMode mode, bool isTwoPlayers = false)
     {
         this.mode = mode;
+        this.isTwoPlayers = isTwoPlayers;
+        pointsArray = new int[isTwoPlayers ? 2 : 1];
 
         ValidForResume = false;
 
@@ -221,11 +227,22 @@ public partial class GameplayScreen : GameScreen
 
     private void prepareForRound()
     {
+        if (isTwoPlayers)
+        {
+            currentPlayer++;
+            if (currentPlayer == 3) currentPlayer = 1;
+        }
+        else
+            currentPlayer = 1;
+
+        points.Value = pointsArray[currentPlayer - 1];
         hudOverlay.ResetTimer(mode);
 
         combo.Value = 0;
         hoopContainer.MoveToX(GAME_WIDTH / 2f);
         players.FadeIn(TRANSITION_DURATION, Easing.OutQuint).MoveToY(players.Height).MoveToY(0, TRANSITION_DURATION, Easing.OutQuint);
+
+        players.Colour = currentPlayer == 1 ? Colour4.Red : Colour4.Blue;
         hoop.Show();
         hoopDirection = 1;
     }
@@ -306,14 +323,12 @@ public partial class GameplayScreen : GameScreen
 
         Scheduler.AddDelayed(() =>
         {
-            rounds--;
+            if (currentPlayer == (isTwoPlayers ? 2 : 1))
+                rounds--;
 
             if (rounds == 0)
             {
-                this.Push(new ResultsScreen(mode)
-                {
-                    Points = { BindTarget = points }
-                });
+                this.Push(new ResultsScreen(mode, pointsArray, isTwoPlayers));
             }
             else
                 startRound();
@@ -324,7 +339,10 @@ public partial class GameplayScreen : GameScreen
         players.MoveToY(players.Height, TRANSITION_DURATION, Easing.OutQuint).FadeOut(TRANSITION_DURATION, Easing.OutQuint);
 
         if (basketballsVisible == 0)
+        {
             hoop.Hide();
+            pointsArray[currentPlayer - 1] = points.Value;
+        }
     }
 
     private void spawnBasketBall(IDrawable player, bool extraPoint, int playerIndex)
@@ -426,7 +444,10 @@ public partial class GameplayScreen : GameScreen
             basketballsVisible--;
 
             if (!roundInProgress.Value && basketballsVisible == 0)
+            {
                 hoop.Hide();
+                pointsArray[currentPlayer - 1] = points.Value;
+            }
 
             b.Expire();
         });
